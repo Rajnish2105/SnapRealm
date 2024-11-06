@@ -2,54 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { IconHeart } from "@tabler/icons-react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isLiking } from "@/states/atom";
 
 export default function LikeButton({
+  numberOfLikes,
   userId,
   postId,
+  hasUserLikedIt,
 }: {
+  hasUserLikedIt: boolean;
+  numberOfLikes: number;
   userId: string;
   postId: number;
 }) {
-  const AllLikeState = useRecoilValue(isLiking);
-  const setLikedAtom = useSetRecoilState(isLiking);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(hasUserLikedIt);
   const [loading, setLoading] = useState(false);
-  const [numLikes, setNumLikes] = useState<number>(0);
+  const [numLikes, setNumLikes] = useState<number>(numberOfLikes);
 
   useEffect(() => {
-    async function checkIfLiked() {
-      if (!userId) return;
-      try {
-        const res = await fetch(
-          `/api/posts/like?userId=${userId}&postId=${postId}`,
-          { method: "GET" }
-        );
-        const data = await res.json();
-
-        if (res.ok) {
-          setLiked(data.liked); // Set liked based on the response
-        } else {
-          console.error("Error:", data.error);
-        }
-      } catch (error) {
-        console.error("Error fetching like status:", error);
-      }
-    }
-    checkIfLiked();
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    async function GetCount() {
-      const res = await fetch(`/api/posts/like/count?postId=${postId}`);
-      const { numberOfLikes } = await res.json();
-      setNumLikes(numberOfLikes);
-      setLoading(false);
-    }
-    GetCount();
-  }, [postId, AllLikeState]);
+    setLiked(hasUserLikedIt);
+    setNumLikes(numberOfLikes);
+  }, [hasUserLikedIt, numberOfLikes]);
 
   const handleLike = async () => {
     setLoading(true);
@@ -66,7 +38,7 @@ export default function LikeButton({
 
       const data = await response.json();
       setLiked(data.liked);
-      setLikedAtom((prev) => !prev);
+      setNumLikes((prev) => (data.liked ? prev + 1 : prev - 1));
     } catch (error) {
       console.error("Error liking post:", error);
     } finally {

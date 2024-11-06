@@ -15,6 +15,8 @@ import FollowButton from "../User/FollowButton";
 export default async function AllPost() {
   const session = await getServerSession(authOptions);
 
+  const userId = parseInt(session?.user?.id as string);
+
   const allPosts = await db.post.findMany({
     include: {
       author: {
@@ -23,6 +25,22 @@ export default async function AllPost() {
           name: true,
           username: true,
           image: true,
+          following: {
+            where: {
+              followedById: userId, // current user's ID
+            },
+            select: {
+              followingId: true, // Get the IDs of the users that are being followed
+            },
+          },
+        },
+      },
+      likedby: true,
+      savers: true,
+      _count: {
+        select: {
+          likedby: true,
+          comments: true,
         },
       },
     },
@@ -37,6 +55,11 @@ export default async function AllPost() {
   return (
     <div className="w-full h-screen flex flex-col space-y-7">
       {allPosts.map(async (post) => {
+        const hasUserLikedIt = post.likedby.some(
+          (like) => like.userId === userId
+        );
+        const hasUserSavedIt = post.savers.some((saver) => saver.id === userId);
+        const isFollowing = post.author.following.length > 0;
         return (
           <div
             key={post.id}
@@ -64,7 +87,10 @@ export default async function AllPost() {
                     </div>
                     <p className="w-fit">{post.author.username}</p>
                     <div className="ml-2">
-                      <FollowButton userId={post.authorId} />
+                      <FollowButton
+                        isFollowing={isFollowing}
+                        userId={post.authorId}
+                      />
                     </div>
                   </Link>
                   <PostDropDown
@@ -79,17 +105,23 @@ export default async function AllPost() {
                 <div className="flex items-center gap-2">
                   <div>
                     <LikeButton
+                      hasUserLikedIt={hasUserLikedIt}
+                      numberOfLikes={post._count.likedby}
                       userId={session?.user?.id as string}
                       postId={post.id}
                     />
                   </div>
                   <div>
-                    <CommentButton postid={post.id} />
+                    <CommentButton
+                      numComments={post._count.comments}
+                      postid={post.id}
+                    />
                   </div>
                   <button className="focus:outline-none">
                     <PostShare postid={post.id} />
                   </button>
                   <SaveButton
+                    hasUserSavedIt={hasUserSavedIt}
                     userId={session?.user?.id as string}
                     postId={post.id}
                   />

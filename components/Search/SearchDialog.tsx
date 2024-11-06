@@ -31,17 +31,21 @@ export default function SearchDialog({
       if (!res.ok) {
         toast.error("couldn't get users");
       }
-      const { allusers } = await res.json();
-      setAllUsers(allusers);
+      const { allUsers } = await res.json();
+      setAllUsers(allUsers);
     }
     getAllusers();
   }, []);
 
   useEffect(() => {
-    const filteredusers = allUsers?.filter((user) =>
-      user.username.includes(searchTerm)
-    );
-    setFiltered(filteredusers);
+    if (searchTerm !== "") {
+      const filteredusers = allUsers?.filter((user) =>
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFiltered(filteredusers);
+    } else {
+      setFiltered([]);
+    }
   }, [searchTerm]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -63,11 +67,11 @@ export default function SearchDialog({
         />
         <div className="h-1 bg-white w-full rounded-full mb-2" />
 
-        <ul className="w-full p-2">
+        <ul className="w-full h-full p-2 flex flex-col space-y-5">
           {filtered && filtered?.length !== 0 ? (
             filtered?.map((user) => {
               return (
-                <li>
+                <li className="w-full my-2">
                   <Link href={`/${user.username}`}>
                     <div className="flex flex-grow items-center">
                       <div className="w-11 h-11 rounded-full mr-2 flex justify-center overflow-hidden">

@@ -10,6 +10,7 @@ import {
   IconVideo,
   IconPlus,
   IconBrandInstagram,
+  IconMessage,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -60,6 +61,13 @@ export function HomeSidebar({ children }: { children: React.ReactNode }) {
       href: "/reels",
       icon: (
         <IconVideo className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Messages",
+      href: "/chat",
+      icon: (
+        <IconMessage className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {

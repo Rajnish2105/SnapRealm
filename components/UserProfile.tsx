@@ -44,7 +44,7 @@ export default function UserProfile({
           </button>
           <IconSettings />
         </div>
-        <div className="flex justify-between">
+        <div className="flex space-x-6 justify-between">
           <p>
             <span className="font-bold">{numPosts}</span> Posts
           </p>

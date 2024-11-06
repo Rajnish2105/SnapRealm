@@ -7,19 +7,29 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function AllUsers() {
-  const users = await db.user.findMany({
-    take: 5,
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
     redirect("/signin");
   }
+  const userId = parseInt(session?.user?.id!);
 
-  const currentUserId = session?.user?.id!;
+  const users = await db.user.findMany({
+    take: 5,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      following: {
+        where: {
+          followedById: userId, // current user's ID
+        },
+        select: {
+          followingId: true, // Get the IDs of the users that are being followed
+        },
+      },
+    },
+  });
 
   return (
     <div className="w-full mt-4">
@@ -32,7 +42,8 @@ export default async function AllUsers() {
 
       <ul className="flex w-[400px] flex-col space-y-1 flex-nowrap">
         {users.map((user) => {
-          if (user.id === parseInt(currentUserId)) return;
+          if (user.id === userId) return;
+          const isFollowing = user.following.length > 0;
           return (
             <li
               className="px-3 py-2 text-white w-[80%] rounded-lg flex items-center justify-between"
@@ -62,7 +73,7 @@ export default async function AllUsers() {
                 </div>
               </Link>
 
-              <FollowButton userId={user.id} />
+              <FollowButton isFollowing={isFollowing} userId={user.id} />
             </li>
           );
         })}

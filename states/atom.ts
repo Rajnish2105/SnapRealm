@@ -5,11 +5,6 @@ export const isCommentPosted = atom<boolean>({
   default: false,
 });
 
-export const isLiking = atom<boolean>({
-  key: "likeAtom",
-  default: false,
-});
-
 export const isSearching = atom<boolean>({
   key: "searchingAtom",
   default: false,
