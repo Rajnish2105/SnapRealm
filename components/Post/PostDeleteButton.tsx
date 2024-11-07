@@ -1,5 +1,6 @@
 "use client";
 
+import { IconTrash } from "@tabler/icons-react";
 import { redirect } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
@@ -22,7 +23,7 @@ export default function PostDeleteButton({ postid }: { postid: number }) {
         });
       }}
     >
-      Delete
+      <IconTrash size={15} className="inline-block" /> Delete
     </button>
   );
 }

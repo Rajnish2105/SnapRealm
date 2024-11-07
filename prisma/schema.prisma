@@ -46,6 +46,10 @@ model User {
   provider    String 
   createdAt   DateTime @default(now())
 
+//inboxes
+  sender   Inbox[]   @relation("senderLink")
+  receiver   Inbox[]   @relation("receiverLink")
+
   //user posts
   posts       Post[]  
   
@@ -103,4 +107,32 @@ model Story {
   createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Inbox {
+  id            String      @id @default(uuid())
+  senderId      Int         // ID of the sender (user)
+  receiverId    Int         // ID of the receiver (user)
+  createdAt     DateTime    @default(now()) // Timestamp when the conversation started
+
+  // Relations
+  sender        User        @relation("senderLink", fields: [senderId], references: [id])
+  receiver      User        @relation("receiverLink", fields: [receiverId], references: [id])
+  messages      Message[]   // Link to multiple messages within this conversation
+}
+
+model Message {
+  id             String        @id @default(uuid())
+  conversationId String
+  content        String
+  timestamp      DateTime      @default(now())
+  status         MessageStatus @default(UNREAD)
+
+  // Relations
+  conversation   Inbox         @relation(fields: [conversationId], references: [id])
+}
+
+enum MessageStatus {
+  UNREAD
+  READ
 }
