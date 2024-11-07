@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
 import {
   IconArrowLeft,
@@ -23,7 +23,6 @@ import SearchDialog from "./Search/SearchDialog";
 
 export function HomeSidebar({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
-
   const [searchStatus, setSearchStatus] = useRecoilState(isSearching);
 
   const links = [
