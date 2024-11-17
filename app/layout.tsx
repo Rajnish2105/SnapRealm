@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Providers } from "@/provider";
-import { HomeSidebar } from "@/components/HomeSidebar";
 import ConditionalWrapper from "@/components/ConditionalWrapper";
 
 const geistSans = localFont({

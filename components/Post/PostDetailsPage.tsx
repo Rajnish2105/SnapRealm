@@ -60,7 +60,13 @@ export default async function PostDetailsPage({ postid }: { postid: string }) {
     const isFollowing = post.data.author.following.length > 0;
 
     return (
-      <div className="w-full overflow-auto h-screen mt-2 flex flex-col space-y-3">
+      <div
+        className="w-full overflow-auto [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:bg-gray-300
+  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 h-screen mt-2 flex flex-col space-y-3"
+      >
         <div className="m-auto w-full flex flex-col min-w-[400px] max-w-[960px]">
           <main className="flex-grow w-[80%] m-auto">
             <div className="flex flex-col gap-4 p-4 relative">

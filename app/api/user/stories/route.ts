@@ -70,24 +70,31 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Upload files to Cloudinary (or any storage service)
     const storiesUrl = await uploadImages(files);
-
-    // Save story URLs and userId to the database
-    const newStory = await db.story.create({
-      data: {
-        stories: storiesUrl,
-        userId: userId,
-      },
+    const existingStory = await db.story.findFirst({
+      where: { userId: userId },
     });
 
-    return NextResponse.json(
-      {
-        newStory,
-        message: "Stories posted successfully",
-      },
-      { status: 200 }
-    );
+    if (existingStory) {
+      const upadatedStories = await db.story.update({
+        where: {
+          id: existingStory.id,
+        },
+        data: {
+          stories: [...existingStory.stories, ...storiesUrl],
+        },
+      });
+
+      return NextResponse.json({ story: upadatedStories }, { status: 200 });
+    } else {
+      const newStory = await db.story.create({
+        data: {
+          stories: storiesUrl,
+          userId: userId,
+        },
+      });
+      return NextResponse.json({ story: newStory }, { status: 200 });
+    }
   } catch (error) {
     console.error("Error creating stories:", error);
     return NextResponse.json(

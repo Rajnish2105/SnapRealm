@@ -28,8 +28,17 @@ export default function Stories() {
         toast.error("Couldn't get stories", { closeButton: true });
       }
       const { stories } = await res.json();
-      setStories(stories);
+      const now = new Date(); // Current date and time
+      const cutoffTime = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
+
+      const todayStories = stories.filter((story: any) => {
+        const createdAt = new Date(story.createdAt);
+        return createdAt >= cutoffTime;
+      });
+
+      setStories(todayStories);
     }
+    getStories();
   }, []);
 
   const handleStoryClick = () => {
@@ -47,7 +56,7 @@ export default function Stories() {
 
   if (stories.length === 0) {
     return (
-      <div className="flex items-center mt-4 justify-start w-[80%] m-auto">
+      <div className="flex items-center mt-4 justify-start w-[80%] mx-auto mb-0">
         <div className="h-16 w-16 border-2 border-red-500 rounded-full cursor-pointer relative">
           <Image
             src={

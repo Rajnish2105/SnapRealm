@@ -1,11 +1,12 @@
 "use client";
 
 import { IconTrash } from "@tabler/icons-react";
-import { redirect } from "next/navigation";
-import React from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function PostDeleteButton({ postid }: { postid: number }) {
+  const router = useRouter();
+
   return (
     <button
       onClick={() => {
@@ -17,7 +18,7 @@ export default function PostDeleteButton({ postid }: { postid: number }) {
               if (!res.ok) {
                 toast.error("Couldn't delete your post at the moment!");
               }
-              redirect("/");
+              router.push("/");
             },
           },
         });

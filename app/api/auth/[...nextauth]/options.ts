@@ -149,4 +149,14 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/signin",
   },
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token-snapRealm-app",
+      options: {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+      },
+    },
+  },
 };

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { IconHeart } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 export default function LikeButton({
   numberOfLikes,
@@ -28,13 +29,16 @@ export default function LikeButton({
     setLiked((prev) => !prev);
 
     try {
-      const response = await fetch(`/api/posts/like?postId=${postId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postId }),
-      });
+      const response = await fetch(
+        `/api/posts/like?postId=${postId}&userId=${userId}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Can't like this post right now", { closeButton: true });
+      }
 
       const data = await response.json();
       setLiked(data.liked);

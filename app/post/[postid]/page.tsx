@@ -1,13 +1,22 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import PostDetailsPage from "@/components/Post/PostDetailsPage";
 import { PostLoader } from "@/components/Post/PostLoader";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export default function DetailsAboutThePost({
+export default async function DetailsAboutThePost({
   params,
 }: {
   params: { postid: string };
 }) {
   const { postid } = params;
+
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user || !postid) {
+    redirect("/signup");
+  }
 
   return (
     <Suspense

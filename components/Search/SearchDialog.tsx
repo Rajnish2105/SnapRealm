@@ -54,6 +54,10 @@ export default function SearchDialog({
 
   return (
     <dialog open={status} onClose={changeStatus}>
+      <div
+        className="fixed inset-0 bg-[rgba(0,0,0,0.6)] z-10"
+        onClick={changeStatus}
+      />
       <div className="fixed top-0 left-0 w-[20%] h-screen bg-[rgba(0,0,0,0.9)] z-30 p-5 rounded-sm text-white">
         <button className="absolute top-2 right-2" onClick={changeStatus}>
           <IconX />

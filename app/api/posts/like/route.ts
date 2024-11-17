@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 
 export async function POST(req: NextRequest) {
   const postIdes = req.nextUrl.searchParams.get("postId") as string;
@@ -19,8 +18,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const user = session.user.id as string;
-  const userId = parseInt(user);
+  const userId = parseInt(session.user.id as string);
   const postId = parseInt(postIdes);
 
   // console.log(numberOfLikes);
@@ -33,6 +31,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log("Your status", existingLike);
+
     if (existingLike) {
       // If already liked, remove the like (unlike)
       const deletedLike = await db.likedby.delete({
@@ -41,17 +41,7 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      if (deletedLike) {
-        // console.log("done Deleting the like");
-        revalidatePath("/");
-        revalidatePath(`/${postId}`);
-        return NextResponse.json({ liked: false }, { status: 200 });
-      } else {
-        return NextResponse.json(
-          { message: "Error unliking" },
-          { status: 500 }
-        );
-      }
+      return NextResponse.json({ liked: false }, { status: 200 });
     } else {
       // If not liked, create a new like
       const doneliking = await db.likedby.create({
@@ -61,17 +51,10 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      if (doneliking) {
-        // console.log("Liked the post");
-        revalidatePath("/");
-        revalidatePath(`/${postId}`);
-        return NextResponse.json({ liked: true }, { status: 200 });
-      } else {
-        console.log("Something went wrong while likeing the post");
-      }
+      return NextResponse.json({ liked: true }, { status: 200 });
     }
   } catch (error) {
-    console.error("Error handling like:", error);
+    console.log("server down");
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

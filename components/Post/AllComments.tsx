@@ -37,7 +37,7 @@ export default function AllComments({ postid }: { postid: string }) {
       <>
         <div className="h-0.5 bg-white w-full rounded-sm my-3" />
         <div className="text-[rgba(255,255,255,0.5)] flex justify-center items-center w-full">
-          Waiting for the Comments...
+          Waiting for Your Comment...
         </div>
       </>
     );

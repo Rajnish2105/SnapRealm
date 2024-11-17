@@ -1,14 +1,35 @@
 import { db } from "@/lib/db";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { authOptions } from "../auth/[...nextauth]/options";
 
 export async function GET(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
+  }
+
+  const userId = parseInt(session?.user?.id!);
+
   try {
-    const user = await db.user.findFirst({
+    const followers = await db.follows.findMany({
       where: {
-        id: 19,
+        followedById: userId,
+      },
+      select: {
+        following: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            image: true,
+          },
+        },
       },
     });
-    return NextResponse.json({ user }, { status: 200 });
+    // console.log(followers);
+    return NextResponse.json({ followers }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "no server" }, { status: 500 });

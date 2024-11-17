@@ -7,7 +7,7 @@ export default async function NewPostPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/");
+    redirect("/signup");
   }
 
   return (

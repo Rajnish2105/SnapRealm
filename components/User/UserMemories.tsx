@@ -36,7 +36,12 @@ export default function UserMemories({
           <Empty what="Make" />
         )
       ) : savedposts.length !== 0 ? (
-        <WantToSee value={savedposts} />
+        <>
+          <WantToSee value={savedposts} />
+          <p className="w-full text-center text-[rgba(255,255,255,0.5)] my-4">
+            No more saved memories
+          </p>
+        </>
       ) : (
         <Empty what="Save" />
       )}

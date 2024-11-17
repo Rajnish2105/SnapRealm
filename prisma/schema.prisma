@@ -49,6 +49,7 @@ model User {
 //inboxes
   sender   Inbox[]   @relation("senderLink")
   receiver   Inbox[]   @relation("receiverLink")
+  sentMessages   Message[] @relation("messageSenderLink")
 
   //user posts
   posts       Post[]  
@@ -123,6 +124,7 @@ model Inbox {
 
 model Message {
   id             String        @id @default(uuid())
+  senderId       Int 
   conversationId String
   content        String
   timestamp      DateTime      @default(now())
@@ -130,6 +132,7 @@ model Message {
 
   // Relations
   conversation   Inbox         @relation(fields: [conversationId], references: [id])
+  sender         User        @relation("messageSenderLink", fields: [senderId], references: [id])
 }
 
 enum MessageStatus {

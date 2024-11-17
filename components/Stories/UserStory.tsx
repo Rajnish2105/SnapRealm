@@ -37,7 +37,7 @@ const UserStory = ({
   }, []);
 
   useEffect(() => {
-    const totalDuration = 5000; // 5 seconds for each slide
+    const totalDuration = 3000; // 5 seconds for each slide
     const startTime = Date.now();
 
     // Update progress based on the elapsed time
@@ -81,9 +81,6 @@ const UserStory = ({
     setProgress(0); // Reset progress when changing slide manually
   };
 
-  if (!userStory) {
-    setShowUserStory();
-  }
   if (userStory?.stories) {
     return (
       <dialog open={showUserStory} onClose={setShowUserStory}>

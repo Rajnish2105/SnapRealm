@@ -1,4 +1,3 @@
-import React from "react";
 import { redirect } from "next/navigation";
 import { authOptions } from "./api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
@@ -16,7 +15,13 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="text-white w-full bg-black overflow-y-auto flex flex-wrap space-y-7">
+    <div
+      className="text-white w-full bg-black overflow-y-auto flex flex-wrap space-y-7 [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:bg-gray-300
+  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+    >
       <div className="w-full">
         <Stories />
       </div>
@@ -31,7 +36,7 @@ export default async function HomePage() {
           <AllPost />
         </Suspense>
       </div>
-      <div className="w-[30%] md:flex md:flex-col md:space-y-5 hidden">
+      <div className="w-[30%] hidden lg:flex lg:flex-col lg:space-y-5">
         <Suspense fallback={<UserLoader />}>
           <AllUsers />
         </Suspense>
