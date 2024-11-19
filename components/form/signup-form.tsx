@@ -54,7 +54,7 @@ export default function SignupForm() {
     });
 
     if (res.ok) {
-      const response = await signIn("credentials", {
+      await signIn("credentials", {
         email: user.email,
         password: user.password,
         redirect: false,
@@ -101,6 +101,7 @@ export default function SignupForm() {
               id="firstname"
               placeholder="joi"
               {...register("firstname")}
+              autoFocus
             />
             {errors.firstname && (
               <p className="text-red-500">{errors.firstname.message}</p>

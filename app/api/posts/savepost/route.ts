@@ -17,7 +17,7 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const updatedUser = await db.user.update({
+    await db.user.update({
       where: { id: parseInt(userId) },
       data: {
         savedPosts:
@@ -38,6 +38,7 @@ export async function PUT(req: NextRequest) {
       { status: 200 }
     );
   } catch (err) {
+    console.log("Error", err);
     return NextResponse.json({ message: "Error connecting!" }, { status: 500 });
   }
 }
@@ -55,6 +56,9 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+    if (!user) {
+      throw new Error("Couldn't find user");
+    }
     // console.log("Get Saved Posts", user);
     if (user?.savedPosts?.length! > 0) {
       return NextResponse.json({ SavedPost: true }, { status: 200 });
@@ -62,6 +66,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ SavedPost: false }, { status: 200 });
     }
   } catch (err) {
-    console.log("Error getting saved status");
+    console.log("Error getting saved status", err);
   }
 }

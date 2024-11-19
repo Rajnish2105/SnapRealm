@@ -71,7 +71,7 @@ export default function SigninForm() {
       </div>
 
       <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200 text-center">
-        Let's dive in
+        Let&apos;s dive in
       </h2>
 
       <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
@@ -81,6 +81,7 @@ export default function SigninForm() {
             id="email"
             placeholder="your@gmail.com"
             {...register("email")}
+            autoFocus
           />
           {errors.email && (
             <p className="text-red-500">{errors.email.message}</p>

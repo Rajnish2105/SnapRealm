@@ -2,11 +2,11 @@ import { redirect } from "next/navigation";
 import { authOptions } from "./api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { Suspense } from "react";
-import Stories from "@/components/Stories/Stories";
 import AllPost from "@/components/Post/AllPost";
 import AllUsers from "@/components/User/AllUsers";
 import { UserLoader } from "@/components/User/UserLoader";
 import { PostLoader } from "@/components/Post/PostLoader";
+import AllStories from "@/components/Stories/AllStories";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -22,13 +22,13 @@ export default async function HomePage() {
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
     >
-      <div className="w-full">
-        <Stories />
+      <div className="w-[90%] m-auto flex items-center mt-2">
+        <AllStories />
       </div>
       <div className="text-white flex-grow dark flex justify-center items-center h-screen">
         <Suspense
           fallback={
-            <div className="w-full h-screen mt-2 p-2 flex items-center flex-col space-y-7">
+            <div className="w-full h-screen p-2 flex items-center flex-col space-y-7">
               <PostLoader />
             </div>
           }

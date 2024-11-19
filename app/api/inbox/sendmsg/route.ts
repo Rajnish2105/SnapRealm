@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 export async function POST(req: NextRequest) {
   const inboxId = req.nextUrl.searchParams.get("inboxId");
   const session = await getServerSession(authOptions);
-  const userId = parseInt(session?.user?.id!);
+  const userId = session?.user?.id;
 
   const body = await req.json();
   const { msg } = body;
@@ -17,9 +17,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const newMsg = await db.message.create({
+    await db.message.create({
       data: {
-        senderId: userId,
+        senderId: Number(userId),
         conversationId: inboxId,
         content: msg,
       },
@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (err) {
+    console.log("Error", err);
     return NextResponse.json({ message: "Server Down" }, { status: 200 });
   }
 }

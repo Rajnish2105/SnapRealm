@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     if (existingLike) {
       // If already liked, remove the like (unlike)
-      const deletedLike = await db.likedby.delete({
+      await db.likedby.delete({
         where: {
           userId_postId: { userId, postId },
         },
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ liked: false }, { status: 200 });
     } else {
       // If not liked, create a new like
-      const doneliking = await db.likedby.create({
+      await db.likedby.create({
         data: {
           userId,
           postId,
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ liked: true }, { status: 200 });
     }
   } catch (error) {
-    console.log("server down");
+    console.log("server down", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

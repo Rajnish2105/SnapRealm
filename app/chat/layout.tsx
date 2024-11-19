@@ -15,7 +15,7 @@ type friendstype = {
   };
 }[];
 
-export default function chatPage({
+export default function ChatPageLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -61,11 +61,13 @@ export default function chatPage({
 
   return (
     <main className="w-full h-screen flex">
-      <div className="w-[300px] h-full flex flex-col border border-r-slate-200">
-        <div className="w-full flex justify-evenly my-6 border-b-2 boder-b-white text-white">
+      <div className="w-[60px] overflow-hidden hover:w-[300px] h-full flex flex-col border-r-2 border-r-[rgba(255,255,255,0.5)] group transition-all duration-500 ease-in-out rounded-md">
+        <div className="w-full my-6 flex justify-evenly border-b-2 boder-b-white text-white">
           <p
             className={`${
-              showInbox && "text-blue-500 border-b-2 border-b-blue-500"
+              showInbox
+                ? "text-blue-500 border-b-2 border-b-blue-500"
+                : "hidden group-hover:block"
             } hover:border-b-2 hover:border-b-white cursor-pointer`}
             onClick={() => handleChat("inbox")}
           >
@@ -73,7 +75,9 @@ export default function chatPage({
           </p>
           <p
             className={`${
-              !showInbox && "text-blue-500 border-b-2 border-b-blue-500"
+              !showInbox
+                ? "text-blue-500 border-b-2 border-b-blue-500"
+                : "hidden group-hover:block"
             } hover:border-b-2 hover:border-b-white cursor-pointer`}
             onClick={() => handleChat("request")}
           >
@@ -88,7 +92,7 @@ export default function chatPage({
                   <div
                     key={friend.following.id}
                     onClick={() => handleUserClick(friend.following.id)}
-                    className="flex w-[80%] items-center cursor-pointer"
+                    className="flex w-[300px] items-center cursor-pointer"
                   >
                     <div className="w-11 h-11 rounded-full mr-2 flex justify-center overflow-hidden">
                       <Image

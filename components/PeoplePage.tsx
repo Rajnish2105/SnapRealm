@@ -22,7 +22,7 @@ export default async function PeoplePage() {
     },
   });
 
-  const currentUserId = session?.user?.id!;
+  const currentUserId = session?.user?.id as string;
 
   return (
     <div

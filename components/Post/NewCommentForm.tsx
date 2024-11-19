@@ -56,6 +56,7 @@ export default function NewCommentsForm({
         toast.error("Error creating the comment");
       }
     } catch (err) {
+      console.log("Error", err);
       toast.error("Error creating the comment", {
         closeButton: true,
       });

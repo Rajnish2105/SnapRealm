@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json({ Inbox }, { status: 200 });
   } catch (err) {
+    console.log("Error", err);
     return NextResponse.json(
       { message: "Could't connect to the server" },
       { status: 500 }

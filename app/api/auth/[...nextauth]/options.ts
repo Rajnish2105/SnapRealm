@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any) {
+      async authorize(credentials) {
         // console.log("Credentials received:", credentials);
         const user = await db.user.findFirst({
           where: {
@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         if (user) {
           // console.log(credentials.password);
           const passwordValidation = await bcrypt.compare(
-            credentials.password,
+            credentials!.password,
             user.password as string
           );
           // console.log(passwordValidation);
@@ -85,7 +85,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       // console.log("Token", token);
       // console.log("session", session);
       // console.log("User", user); //undefined
@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
         return session;
       }
     },
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user, profile }) {
       console.log("Profile", profile);
 
       const existingUser = await db.user.findUnique({
@@ -127,7 +127,7 @@ export const authOptions: NextAuthOptions = {
         return true;
       }
       try {
-        const newUser = await db.user.create({
+        await db.user.create({
           data: {
             name: profile?.name as string,
             username: profile?.name as string,
@@ -136,10 +136,9 @@ export const authOptions: NextAuthOptions = {
             provider: "google",
           },
         });
-        // console.log("New User Created");
         redirect("/");
       } catch (err) {
-        // console.log(err);
+        console.log("Couldn't authenticate the user", err);
         toast.error("Error Creating the user! Please try again");
       }
       return true;

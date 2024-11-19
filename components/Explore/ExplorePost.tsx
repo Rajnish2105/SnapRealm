@@ -29,7 +29,7 @@ export default function ExplorePost() {
   const fetchPosts = async () => {
     setLoader(true);
     try {
-      console.log(`Fetching page ${page}`);
+      // console.log(`Fetching page ${page}`);
       const res = await fetch(`/api/explore?page=${page}&limit=${7}`);
       if (!res.ok) {
         throw new Error("Can't get your posts");

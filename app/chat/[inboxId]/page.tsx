@@ -7,6 +7,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useWebSocket } from "@/context/SocketContext";
 import CustomLoader from "@/components/CustomLoader";
+import { useRouter } from "next/navigation";
 
 type inboxtype = {
   id: number;
@@ -37,11 +38,16 @@ export default function ChatRoomPage({
 }: {
   params: { inboxId: string };
 }) {
+  const router = useRouter();
   const { socket, user, sendMessage } = useWebSocket();
   const [msgState, setMsgState] = useState<string>("");
   const [inbox, setInbox] = useState<inboxtype>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { inboxId } = params;
+
+  if (!inboxId || !user) {
+    router.push("/signup");
+  }
 
   const [chat, setChat] = useState<chattype[]>();
 
@@ -82,13 +88,13 @@ export default function ChatRoomPage({
         }
       };
     }
-  }, [socket, inboxId]);
+  }, [socket, inboxId, chat?.length]);
 
   // console.log("the chat", chat);
 
   useEffect(() => {
     sendMessage("join-inbox", { userId: user?.id, inboxId: inboxId });
-  }, [inboxId]);
+  }, [inboxId, sendMessage]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setMsgState(e.target.value);
@@ -133,7 +139,7 @@ export default function ChatRoomPage({
     if (inbox.receiver.id != user?.id) me = inbox.receiver;
     else me = inbox.sender;
     return (
-      <div className="flex-grow h-full flex justify-center items-center">
+      <div className="h-full flex justify-center items-center w-full">
         <div className="w-full h-full">
           <div className="w-full flex justify-between items-center p-4 border-b-2 border-b-[rgba(255,255,255,0.2)]">
             <Link href={`/${me.username}`}>
@@ -164,13 +170,7 @@ export default function ChatRoomPage({
               <IconSettings />
             </div>
           </div>
-          <div
-            className="_allmessages flex h-[80%] flex-col overflow-auto [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:bg-gray-100
-  [&::-webkit-scrollbar-thumb]:bg-gray-300
-  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-          >
+          <div className="_allmessages flex h-[79%] h-min-full flex-col overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
             {chat &&
               chat.map((msg, i) => {
                 return (
@@ -190,11 +190,8 @@ export default function ChatRoomPage({
                 );
               })}
           </div>
-          <div className="w-full p-5">
-            <form
-              onSubmit={SendMsg}
-              className="flex items-center justify-between"
-            >
+          <div className="w-full py-3 px-5">
+            <form onSubmit={SendMsg} className="flex items-center">
               <input
                 value={msgState}
                 onChange={handleChange}

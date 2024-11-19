@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
     // console.log("hashedpassword", hashedPassword);
 
-    const newUser = await db.user.create({
+    await db.user.create({
       data: {
         provider: "credentials",
         name,
@@ -54,16 +54,13 @@ export async function POST(req: Request) {
         password: hashedPassword,
       },
     });
-    const { password: newUserPassword, ...rest } = newUser;
 
     return NextResponse.json(
-      {
-        user: rest,
-        message: "New User created successfully",
-      },
+      { message: "New User created successfully" },
       { status: 201 }
     );
   } catch (err) {
+    console.log("Error", err);
     return NextResponse.json(
       { message: "Something went Wrong!!" },
       { status: 500 }

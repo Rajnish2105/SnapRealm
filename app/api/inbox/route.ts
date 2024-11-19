@@ -55,6 +55,7 @@ export async function GET(req: NextRequest) {
       );
     }
   } catch (err) {
+    console.log("Error", err);
     return NextResponse.json({ message: "Server Down" }, { status: 500 });
   }
 }

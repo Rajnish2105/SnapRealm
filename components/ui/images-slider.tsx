@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import CustomLoader from "../CustomLoader";
 
 export const ImagesSlider = ({
   images,
@@ -70,7 +71,7 @@ export const ImagesSlider = ({
     window.addEventListener("keydown", handleKeyDown);
 
     // autoplay
-    let interval: any;
+    let interval: NodeJS.Timeout;
     if (autoplay) {
       interval = setInterval(() => {
         handleNext();
@@ -81,7 +82,7 @@ export const ImagesSlider = ({
       window.removeEventListener("keydown", handleKeyDown);
       clearInterval(interval);
     };
-  }, []);
+  }, [autoplay, handleNext, handlePrevious]);
 
   const slideVariants = {
     initial: {
@@ -115,6 +116,14 @@ export const ImagesSlider = ({
   };
 
   const areImagesLoaded = loadedImages.length > 0;
+
+  if (loading) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <CustomLoader />
+      </div>
+    );
+  }
 
   return (
     <div

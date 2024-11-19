@@ -11,9 +11,21 @@ import { isCommentPosted } from "@/states/atom";
 // const fetcher = (url: string) =>
 //   fetch(url, { method: "GET" }).then((res) => res.json());
 
+type commentstype = {
+  id: number;
+  content: string;
+  postid: number;
+  author: {
+    id: number;
+    name: string;
+    username: string;
+    image: string;
+  };
+};
+
 export default function AllComments({ postid }: { postid: string }) {
   const AllCommentsState = useRecoilValue(isCommentPosted);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<commentstype[] | never[]>([]);
 
   useEffect(() => {
     async function fetchallcomments() {
@@ -46,11 +58,11 @@ export default function AllComments({ postid }: { postid: string }) {
     <div className="w-full overflow-hidden">
       <div className="h-0.5 bg-white w-full rounded-md my-3" />
       <ul className="flex flex-col space-y-4">
-        {comments.map((comment: any) => {
+        {comments.map((comment: commentstype) => {
           return (
             <li
               className="flex flex-wrap relative bg-[rgba(130,130,130,0.34)] p-2 rounded-sm"
-              key={comment.id as string}
+              key={comment.id}
             >
               <div className="w-9 h-9 border-gray-100 border-2 rounded-full mr-2 flex justify-center overflow-hidden">
                 <Image

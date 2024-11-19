@@ -1,5 +1,5 @@
 import CustomLoader from "@/components/CustomLoader";
-import PeoplePage from "@/components/PoplePage";
+import PeoplePage from "@/components/PeoplePage";
 import { Suspense } from "react";
 
 export default function AllPeoplePage() {

@@ -1,22 +1,25 @@
 import { db } from "@/lib/db";
-import PostImages from "../PostImages";
-import { PostDropDown } from "./PostDropDown";
-import Link from "next/link";
 import Image from "next/image";
-import LikeButton from "../LikeButton";
+import Link from "next/link";
 import CommentButton from "../CommentButton";
+import LikeButton from "../LikeButton";
+import PostImages from "../PostImages";
+import FollowButton from "../User/FollowButton";
+import { PostDropDown } from "./PostDropDown";
 import PostShare from "./PostShare";
 import SaveButton from "./SaveButton";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import FollowButton from "../User/FollowButton";
 
-export default async function AllPost() {
-  const session = await getServerSession(authOptions);
-
-  const userId = parseInt(session?.user?.id as string);
-
-  const allPosts = await db.post.findMany({
+export default async function FollowingPost({ userId }: { userId: string }) {
+  const follwersPost = await db.post.findMany({
+    where: {
+      author: {
+        followedBy: {
+          some: {
+            followingId: parseInt(userId),
+          },
+        },
+      },
+    },
     include: {
       author: {
         select: {
@@ -26,7 +29,7 @@ export default async function AllPost() {
           image: true,
           following: {
             where: {
-              followedById: userId, // current user's ID
+              followedById: parseInt(userId), // current user's ID
             },
             select: {
               followingId: true, // Get the IDs of the users that are being followed
@@ -45,17 +48,19 @@ export default async function AllPost() {
     },
   });
 
-  if (allPosts.length === 0) {
-    return <div>No Post here...</div>;
+  if (!follwersPost || FollowingPost.length === 0) {
+    return;
   }
 
   return (
     <div className="w-full h-screen flex flex-col space-y-7">
-      {allPosts.map(async (post) => {
+      {follwersPost.map(async (post) => {
         const hasUserLikedIt = post.likedby.some(
-          (like) => like.userId === userId
+          (like) => like.userId === parseInt(userId)
         );
-        const hasUserSavedIt = post.savers.some((saver) => saver.id === userId);
+        const hasUserSavedIt = post.savers.some(
+          (saver) => saver.id === Number(userId)
+        );
         const isFollowing = post.author.following.length > 0;
         return (
           <div
@@ -104,7 +109,7 @@ export default async function AllPost() {
                     <LikeButton
                       hasUserLikedIt={hasUserLikedIt}
                       numberOfLikes={post._count.likedby}
-                      userId={session?.user?.id as string}
+                      userId={userId}
                       postId={post.id}
                     />
                   </div>
@@ -119,7 +124,7 @@ export default async function AllPost() {
                   </button>
                   <SaveButton
                     hasUserSavedIt={hasUserSavedIt}
-                    userId={session?.user?.id as string}
+                    userId={userId}
                     postId={post.id}
                   />
                 </div>

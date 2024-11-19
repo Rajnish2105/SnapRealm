@@ -32,7 +32,7 @@ export default async function AllUsers() {
   });
 
   return (
-    <div className="w-full mt-4">
+    <div className="w-full">
       <div className="w-[300px] flex justify-between items-center my-3">
         <h1 className="w-fit">You might know..</h1>
         <Link className="text-sm w-fit text-end" href="/explore/people">

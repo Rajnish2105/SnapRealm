@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "Server Down" }, { status: 500 });
     }
   } catch (err) {
+    console.log("Error", err);
     return NextResponse.json(
       { message: "The request was intrupted" },
       { status: 500 }

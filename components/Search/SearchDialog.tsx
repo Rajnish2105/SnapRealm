@@ -46,7 +46,7 @@ export default function SearchDialog({
     } else {
       setFiltered([]);
     }
-  }, [searchTerm]);
+  }, [searchTerm, allUsers]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
@@ -75,7 +75,7 @@ export default function SearchDialog({
           {filtered && filtered?.length !== 0 ? (
             filtered?.map((user) => {
               return (
-                <li className="w-full my-2">
+                <li key={user.username} className="w-full my-2">
                   <Link href={`/${user.username}`}>
                     <div className="flex flex-grow items-center">
                       <div className="w-11 h-11 rounded-full mr-2 flex justify-center overflow-hidden">

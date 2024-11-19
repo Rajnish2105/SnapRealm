@@ -34,11 +34,11 @@ export default async function PostDetailsPage({ postid }: { postid: string }) {
     return <div>{currentUser.error}</div>;
   }
 
-  const followingUserIds =
-    currentUser.data?.map((follow) => follow.followingId) || [];
+  // const followingUserIds =
+  //   currentUser.data?.map((follow) => follow.followingId) || [];
   // console.log("All the id", followingUserIds);
 
-  const post = await getCurrentPost(postid, userId, followingUserIds);
+  const post = await getCurrentPost(postid, userId);
 
   if (post.error) {
     return (
@@ -170,11 +170,7 @@ async function getFollowerList(userid: number) {
   }
 }
 
-async function getCurrentPost(
-  postid: string,
-  userId: number,
-  followingUserIds: number[]
-) {
+async function getCurrentPost(postid: string, userId: number) {
   if (!postid) {
     return { error: "No such post exists" };
   }

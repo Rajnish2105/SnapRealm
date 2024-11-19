@@ -9,7 +9,7 @@ export default function ConditionalWrapper({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const noLayoutRoutes = ["/signin", "/signup"];
+  const noLayoutRoutes = ["/signin", "/signup", "/stories"];
 
   if (noLayoutRoutes.includes(pathname)) {
     return <>{children}</>;
