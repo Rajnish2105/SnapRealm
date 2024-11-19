@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 export default function UploadStory() {
   const router = useRouter();
@@ -168,9 +169,11 @@ export default function UploadStory() {
 
       {/* Captured Photo Preview */}
       {capturedPhoto && (
-        <img
+        <Image
           src={capturedPhoto}
           alt="Captured"
+          width={600}
+          height={700}
           className="w-[90%] md:w-[600px] h-[80%] object-cover rounded-md"
         />
       )}

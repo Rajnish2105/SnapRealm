@@ -3,6 +3,7 @@
 import { IconBookmark, IconGrid4x4 } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 export default function UserMemories({
   allposts,
@@ -16,11 +17,15 @@ export default function UserMemories({
   const session = useSession();
   const [show, setShow] = useState<string>("posts");
 
+  if (!session.data?.user) {
+    redirect("/signup");
+  }
+
   return (
     <div className="w-full flex flex-col items-center">
       <NavBar
         userid={userid}
-        sessionid={parseInt(session.data?.user?.id!)}
+        sessionid={Number(session.data?.user?.id)}
         show={show}
         setShow={setShow}
       />
@@ -87,7 +92,7 @@ function NavBar({
   userid: number;
   sessionid: number;
   show: string;
-  setShow: Function;
+  setShow: (value: string) => void;
 }) {
   return (
     <ul className="flex w-full justify-center flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">

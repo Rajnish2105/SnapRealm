@@ -12,7 +12,7 @@ export default async function AllUsers() {
   if (!session?.user) {
     redirect("/signin");
   }
-  const userId = parseInt(session?.user?.id!);
+  const userId = Number(session?.user?.id as string);
 
   const users = await db.user.findMany({
     take: 5,

@@ -39,13 +39,11 @@ export async function uploadImages(media: File[]) {
 type CloudinaryError = {
   message: string;
   http_code: number;
-  [key: string]: any; // Additional properties depending on the error
 };
 
 type CloudinaryResult = {
   result: string; // e.g., "deleted"
   id: string; // The ID of the deleted image
-  [key: string]: any; // Additional metadata
 };
 
 export async function deleteImages(media: string[]) {

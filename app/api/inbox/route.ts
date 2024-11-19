@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  console.log("Existing inbox where use is sender", existingInbox);
+  // console.log("Existing inbox where use is sender", existingInbox);
 
   const existinguserinbox = await db.inbox.findFirst({
     where: {
@@ -30,11 +30,11 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  console.log("Existing inbox where use is reciver", existinguserinbox);
+  // console.log("Existing inbox where use is reciver", existinguserinbox);
 
   if (existingInbox || existinguserinbox) doesItExist = true;
 
-  console.log("Existing inbox", existingInbox);
+  // console.log("Existing inbox", existingInbox);
 
   try {
     if (!doesItExist) {

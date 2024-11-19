@@ -36,7 +36,7 @@ export default async function StoryPage({
   params: { username: string };
 }) {
   const username = decodeURIComponent(params.username);
-  let currentStory = parseInt(searchParams.currentStory);
+  const currentStory = parseInt(searchParams.currentStory);
 
   if (!username || currentStory === null) {
     return (
@@ -47,7 +47,7 @@ export default async function StoryPage({
   }
 
   const session = await getServerSession(authOptions);
-  const userId = parseInt(session?.user?.id as string);
+  const userId = Number(session?.user?.id as string);
 
   if (!session?.user) {
     redirect("/signup");
@@ -106,7 +106,8 @@ export default async function StoryPage({
     url,
     header: {
       heading: username,
-      subheading: currentStoryonShow?.user.name!,
+      subheading:
+        currentStoryonShow?.user.name || "know more about this user..",
       profileImage:
         currentStoryonShow?.user.image ||
         `https://api.multiavatar.com/${currentStoryonShow?.user?.name}.svg`,

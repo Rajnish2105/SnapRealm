@@ -66,7 +66,7 @@ export default function ChatRoomPage({
       setIsLoading(false);
     }
     getInbox();
-  }, [inboxId]);
+  }, [inboxId, user?.id]);
 
   useEffect(() => {
     if (socket) {
@@ -94,7 +94,7 @@ export default function ChatRoomPage({
 
   useEffect(() => {
     sendMessage("join-inbox", { userId: user?.id, inboxId: inboxId });
-  }, [inboxId, sendMessage]);
+  }, [inboxId, sendMessage, user?.id]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setMsgState(e.target.value);

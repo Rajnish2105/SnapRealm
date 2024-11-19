@@ -5,9 +5,7 @@ export async function PUT(req: NextRequest) {
   // Changed to POST
   const userId = req.nextUrl.searchParams.get("userId");
   const postId = req.nextUrl.searchParams.get("postId");
-  const isAlreadySaved = req.nextUrl.searchParams.get(
-    "isAlreadySaved"
-  ) as string;
+  const isAlreadySaved = req.nextUrl.searchParams.get("isAlreadySaved");
 
   if (!userId || !postId) {
     return NextResponse.json(
@@ -49,10 +47,10 @@ export async function GET(req: NextRequest) {
 
   try {
     const user = await db.user.findUnique({
-      where: { id: parseInt(userId) },
+      where: { id: Number(userId) },
       select: {
         savedPosts: {
-          where: { id: parseInt(postId) },
+          where: { id: Number(postId) },
         },
       },
     });
@@ -60,7 +58,7 @@ export async function GET(req: NextRequest) {
       throw new Error("Couldn't find user");
     }
     // console.log("Get Saved Posts", user);
-    if (user?.savedPosts?.length! > 0) {
+    if (user?.savedPosts?.length > 0) {
       return NextResponse.json({ SavedPost: true }, { status: 200 });
     } else {
       return NextResponse.json({ SavedPost: false }, { status: 200 });
