@@ -2,7 +2,6 @@
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { HomeSidebar } from "./HomeSidebar";
-import { User } from "next-auth";
 
 export default function ConditionalWrapper({
   children,

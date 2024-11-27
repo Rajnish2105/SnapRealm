@@ -15,12 +15,11 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRecoilState } from "recoil";
 import { isSearching } from "@/states/atom";
 import SearchDialog from "./Search/SearchDialog";
 import SnapRealm from "./SnapRealm";
-import { User } from "next-auth";
 
 export function HomeSidebar({
   children,

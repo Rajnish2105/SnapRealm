@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
@@ -8,10 +8,11 @@ import Link from "next/link";
 import { toast } from "sonner";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { boolean, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import CustomLoader from "../CustomLoader";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -31,9 +32,11 @@ export default function SigninForm() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const onSubmit = async (data: FormData) => {
     // console.log(data);
+    setIsSubmitting(true);
     const response = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -42,6 +45,7 @@ export default function SigninForm() {
     });
     // console.log(response);
     if (response?.ok) {
+      setIsSubmitting(false);
       router.push("/");
     }
     if (response?.error) {
@@ -50,6 +54,7 @@ export default function SigninForm() {
         duration: 10000,
         position: "bottom-center",
       });
+      setIsSubmitting(false);
     }
   };
 
@@ -102,8 +107,9 @@ export default function SigninForm() {
         <button
           className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit"
+          disabled={isSubmitting}
         >
-          Sign in &rarr;
+          {isSubmitting ? <CustomLoader /> : "Sign in →"}
           <BottomGradient />
         </button>
 

@@ -31,7 +31,7 @@ export default function FollowButton({
         throw new Error("Failed to update follow status");
       }
     } catch (error) {
-      toast.error("Couldn't update follow status", {
+      toast.error(`Error is ${error}`, {
         description: "Please try again later.",
       });
       setFollowStatus((prev) => !prev); // Revert optimistic update

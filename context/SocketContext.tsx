@@ -6,8 +6,16 @@ import { User } from "next-auth";
 // Define the context type
 type WebSocketContextType = {
   socket: WebSocket | null;
-  user: User | null;
+  user: Usertype | null;
   connectionError: boolean;
+};
+
+type Usertype = {
+  id: string;
+  name: string | null;
+  username: string;
+  email: string;
+  provider: string;
 };
 
 // Create the WebSocket context
@@ -22,12 +30,12 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Usertype | null>(null);
   const [connectionError, setConnectionError] = useState(false);
   const [reconnectionAttempt, setReconnectionAttempt] = useState(0);
   const session = useSession();
   //   console.log(socket)
-  // console.log(session.data?.user)
+  // console.log(session.data?.user);
   useEffect(() => {
     console.log(
       "useEffect triggered with session user ID:",
@@ -42,7 +50,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       ws.onopen = () => {
         console.log("WebSocket connected.");
         setSocket(ws);
-        setUser(session.data?.user as User);
+        setUser(session.data?.user as Usertype);
         setConnectionError(false);
       };
 

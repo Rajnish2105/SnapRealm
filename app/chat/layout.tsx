@@ -115,6 +115,7 @@ export default function ChatPageLayout({
                             "./defaultuser.svg"
                           }
                           alt="user image"
+                          priority
                           width={45}
                           height={20}
                         />
@@ -158,6 +159,7 @@ export default function ChatPageLayout({
                             "./defaultuser.svg"
                           }
                           alt="user image"
+                          priority
                           width={45}
                           height={20}
                         />

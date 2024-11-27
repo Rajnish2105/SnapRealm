@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, User } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { IconBrandFacebook, IconSend, IconMessage } from "@tabler/icons-react";
+import { IconMessage } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 
-import { Facebook, Share2, Mail, Link } from "lucide-react";
+import { Facebook, Share2, Link } from "lucide-react";
 import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { toast } from "sonner";
 

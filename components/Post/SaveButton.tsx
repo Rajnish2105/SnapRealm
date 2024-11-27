@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { IconBookmark } from "@tabler/icons-react";
 import { Bookmark } from "lucide-react";
 import { toast } from "sonner";
 import CustomLoader from "../CustomLoader";

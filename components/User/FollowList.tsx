@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import {
   Dialog,
@@ -34,13 +34,7 @@ type Followingtype = {
   followingId: number;
 }[];
 
-export function FollowerPopUp({
-  followers,
-  sessionid,
-}: {
-  sessionid: number;
-  followers: Followertype;
-}) {
+export function FollowerPopUp({ followers }: { followers: Followertype }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -96,13 +90,7 @@ export function FollowerPopUp({
   );
 }
 
-export function FollowingPopUp({
-  following,
-  sessionid,
-}: {
-  sessionid: number;
-  following: Followingtype;
-}) {
+export function FollowingPopUp({ following }: { following: Followingtype }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

@@ -8,7 +8,6 @@ import { FollowerPopUp, FollowingPopUp } from "./User/FollowList";
 
 export default function UserProfile({
   id,
-  sessionid,
   name,
   username,
   image,
@@ -19,7 +18,6 @@ export default function UserProfile({
   isUserProfile,
   isFollowing,
 }: {
-  sessionid: number;
   id: number;
   isFollowing: boolean;
   isUserProfile: boolean;
@@ -57,6 +55,7 @@ export default function UserProfile({
             height={160}
             className="rounded-full border border-gray-300"
             alt={`${name}'s profile picture`}
+            priority
           />
         </div>
         <div className="flex-1">
@@ -84,10 +83,10 @@ export default function UserProfile({
               <strong>{numPosts}</strong> posts
             </span>
             <span>
-              <FollowingPopUp following={followers} sessionid={sessionid} />
+              <FollowingPopUp following={followers} />
             </span>
             <span>
-              <FollowerPopUp followers={following} sessionid={sessionid} />
+              <FollowerPopUp followers={following} />
             </span>
           </div>
           <div className="text-center md:text-left">

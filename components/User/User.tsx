@@ -8,6 +8,8 @@ export default async function User({ username }: { username: string }) {
   const session = await getServerSession(authOptions);
   const user = await getUserInfo(username);
 
+  console.log("session user", session?.user);
+
   if (!user) {
     return <div className="text-center py-8">No such user exists</div>;
   }
@@ -31,7 +33,6 @@ export default async function User({ username }: { username: string }) {
         followers={user.followedBy}
         following={user.following}
         bio={user.bio || "Tell something about yourself"}
-        sessionid={sessionUserId}
       />
       <UserMemories
         userid={user.id}

@@ -1,6 +1,5 @@
 "use client";
 
-import { IconMessageCircle } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { useRecoilValue } from "recoil";
