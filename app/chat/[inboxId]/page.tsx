@@ -136,7 +136,7 @@ export default function ChatRoomPage({
 
   if (inbox) {
     let me;
-    if (inbox.receiver.id != user?.id) me = inbox.receiver;
+    if (inbox.receiver.id != Number(user?.id)) me = inbox.receiver;
     else me = inbox.sender;
     return (
       <div className="h-full flex justify-center items-center w-full">
@@ -177,7 +177,9 @@ export default function ChatRoomPage({
                   <div
                     key={i}
                     className={`w-full h-fit flex ${
-                      msg.senderId == user?.id ? "justify-end" : "justify-start"
+                      msg.senderId == Number(user?.id)
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
                     <p
