@@ -45,9 +45,13 @@ export default function ChatRoomPage({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { inboxId } = params;
 
-  if (!inboxId || !user) {
+  if (!inboxId) {
     router.push("/signup");
   }
+
+  console.log("chat user", user);
+
+  const userid = Number(user?.id as string);
 
   const [chat, setChat] = useState<chattype[]>();
 
@@ -66,7 +70,7 @@ export default function ChatRoomPage({
       setIsLoading(false);
     }
     getInbox();
-  }, [inboxId, user?.id]);
+  }, [inboxId, userid]);
 
   useEffect(() => {
     if (socket) {
@@ -93,8 +97,8 @@ export default function ChatRoomPage({
   // console.log("the chat", chat);
 
   useEffect(() => {
-    sendMessage("join-inbox", { userId: user?.id, inboxId: inboxId });
-  }, [inboxId, sendMessage, user?.id]);
+    sendMessage("join-inbox", { userId: userid, inboxId: inboxId });
+  }, [inboxId, sendMessage, userid]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setMsgState(e.target.value);
@@ -102,6 +106,10 @@ export default function ChatRoomPage({
 
   async function SendMsg(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (!msgState || msgState.length === 0) {
+      return;
+    }
 
     const res = await fetch(`/api/inbox/sendmsg?inboxId=${inboxId}`, {
       method: "POST",
@@ -114,7 +122,7 @@ export default function ChatRoomPage({
     sendMessage("send-msg-to", {
       inboxId: inboxId,
       message: msgState,
-      senderId: user?.id,
+      senderId: userid,
     });
 
     if (!res.ok) {
@@ -135,8 +143,13 @@ export default function ChatRoomPage({
   }
 
   if (inbox) {
-    let me;
-    if (inbox.receiver.id != Number(user?.id)) me = inbox.receiver;
+    let me: {
+      id: number;
+      name: string | null;
+      username: string;
+      image: string | null;
+    };
+    if (inbox.receiver.id != userid) me = inbox.receiver;
     else me = inbox.sender;
     return (
       <div className="h-full flex justify-center items-center w-full">
@@ -177,9 +190,7 @@ export default function ChatRoomPage({
                   <div
                     key={i}
                     className={`w-full h-fit flex ${
-                      msg.senderId == Number(user?.id)
-                        ? "justify-end"
-                        : "justify-start"
+                      msg.senderId == userid ? "justify-end" : "justify-start"
                     }`}
                   >
                     <p
