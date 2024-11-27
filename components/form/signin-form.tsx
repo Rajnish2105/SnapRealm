@@ -109,7 +109,13 @@ export default function SigninForm() {
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? <CustomLoader /> : "Sign in →"}
+          {isSubmitting ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <CustomLoader />
+            </div>
+          ) : (
+            "Sign in →"
+          )}
           <BottomGradient />
         </button>
 

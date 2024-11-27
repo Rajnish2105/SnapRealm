@@ -3,15 +3,10 @@ import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import FollowButton from "./FollowButton";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function AllUsers() {
   const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/signin");
-  }
   const userId = Number(session?.user?.id as string);
 
   const users = await db.user.findMany({

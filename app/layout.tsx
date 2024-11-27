@@ -6,7 +6,6 @@ import { Providers } from "@/provider";
 import ConditionalWrapper from "@/components/ConditionalWrapper";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/options";
-import { redirect } from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,7 +38,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/");
+    console.log("user couldn't be found");
   }
 
   return (
@@ -49,9 +48,9 @@ export default async function RootLayout({
       >
         <Providers>
           <ConditionalWrapper
-            username={session.user.username as string}
-            image={session?.user.image as string}
-            name={session.user.name as string}
+            username={session?.user?.username as string}
+            image={session?.user?.image as string}
+            name={session?.user?.name as string}
           >
             {children}
           </ConditionalWrapper>

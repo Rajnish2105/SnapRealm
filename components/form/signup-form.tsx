@@ -148,7 +148,6 @@ export default function SignupForm() {
           disabled={isSubmitting}
         >
           {isSubmitting ? "Creating user..." : `Sign up →`}
-
           <BottomGradient />
         </button>
 
