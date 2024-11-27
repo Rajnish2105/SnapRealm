@@ -1,10 +1,14 @@
 "use client";
 
-import { IconSettings } from "@tabler/icons-react";
 import Image from "next/image";
-import React from "react";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
+import FollowButton from "./User/FollowButton";
+import { FollowerPopUp, FollowingPopUp } from "./User/FollowList";
 
 export default function UserProfile({
+  id,
+  sessionid,
   name,
   username,
   image,
@@ -12,55 +16,84 @@ export default function UserProfile({
   followers,
   following,
   bio,
+  isUserProfile,
+  isFollowing,
 }: {
+  sessionid: number;
+  id: number;
+  isFollowing: boolean;
+  isUserProfile: boolean;
   bio: string;
-  following: number;
-  followers: number;
+  following: {
+    followedBy: {
+      id: number;
+      name: string | null;
+      username: string | null;
+      image: string | null;
+    };
+    followedById: number;
+  }[];
+  followers: {
+    following: {
+      image: string | null;
+      name: string | null;
+      id: number;
+      username: string | null;
+    };
+    followingId: number;
+  }[];
   numPosts: number;
   username: string;
   name: string;
   image: string;
 }) {
   return (
-    <div className="flex justify-evenly mt-3 w-[70%]">
-      <div className="w-[30%] flex items-center mt-8">
-        <Image
-          src={
-            image !== null
-              ? image
-              : `https://api.multiavatar.com/${name!}.svg` || "/defaultuser.svg"
-          }
-          height={160}
-          width={160}
-          className="object-cover rounded-xl group-hover/card:shadow-xl"
-          alt="thumbnail"
-        />
-      </div>
-      <div className="mt-8 flex flex-col space-y-5 justify-start width-[70%]">
-        <div className="flex space-x-5 items-center">
-          <p className="text-lg">{username}</p>
-          <button className="px-4 py-2 h-fit rounded-md bg-gray-400 text-black text-sm">
-            Edit Profile
-          </button>
-          <IconSettings />
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
+        <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
+          <Image
+            src={image || `https://api.multiavatar.com/${name}.svg`}
+            width={160}
+            height={160}
+            className="rounded-full border border-gray-300"
+            alt={`${name}'s profile picture`}
+          />
         </div>
-        <div className="flex space-x-6 justify-between">
-          <p>
-            <span className="font-bold">{numPosts}</span> Posts
-          </p>
-          <p>
-            <span className="font-bold">{followers}</span> Followers
-          </p>
-          <p>
-            <span className="font-bold">{following}</span> Following
-          </p>
-        </div>
-        <div>
-          <p className="font-bold tracking-wide">{name}</p>
-          <p className="text-[rgba(255,255,255,0.7)] text-sm">Member</p>
-        </div>
-        <div>
-          <p>{bio}</p>
+        <div className="flex-1">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 mb-4">
+            <h1 className="text-xl font-normal">{username}</h1>
+            <div className="flex gap-2">
+              {isUserProfile ? (
+                <Button
+                  variant="secondary"
+                  className="h-8 text-sm font-semibold"
+                >
+                  Edit Profile
+                </Button>
+              ) : (
+                <FollowButton userId={id} isFollowing={isFollowing} />
+              )}
+
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-center md:justify-start gap-8 mb-4">
+            <span className="font-semibold text-sm p-2">
+              <strong>{numPosts}</strong> posts
+            </span>
+            <span>
+              <FollowingPopUp following={followers} sessionid={sessionid} />
+            </span>
+            <span>
+              <FollowerPopUp followers={following} sessionid={sessionid} />
+            </span>
+          </div>
+          <div className="text-center md:text-left">
+            <h2 className="font-semibold">{name}</h2>
+            <p className="whitespace-pre-wrap">{bio}</p>
+          </div>
         </div>
       </div>
     </div>

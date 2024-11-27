@@ -1,42 +1,49 @@
 import { db } from "@/lib/db";
-import UserProfile from "../UserProfile";
+import UserProfile from "@/components/UserProfile";
 import UserMemories from "./UserMemories";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export default async function User({ username }: { username: string }) {
-  const user = await getUserinfo(username);
+  const session = await getServerSession(authOptions);
+  const user = await getUserInfo(username);
 
   if (!user) {
-    console.log("No such user exists");
-    return;
+    return <div className="text-center py-8">No such user exists</div>;
   }
 
-  const numFollower = user.followedBy.map((follow) => follow.followingId);
-  const numFollowing = user.following.map((follow) => follow.followedById);
+  const sessionUserId = session?.user?.id ? parseInt(session.user.id) : -1;
+  const isFollowing = user.following.some(
+    (follower) => follower.followedById === sessionUserId
+  );
+  const isUserProfile = sessionUserId === user.id;
+
   return (
-    <div className="overflow-auto w-full">
-      <main className="flex flex-col items-center h-full space-y-9 w-[70%] m-auto">
-        <UserProfile
-          image={user.image!}
-          name={user.name!}
-          username={user.username!}
-          numPosts={user.posts.length!}
-          followers={numFollower.length}
-          following={numFollowing.length}
-          bio={user.bio ? user.bio : "Tell something about yourself"}
-        />
-        <section className="w-full border-t-2 border-t-[rgba(255,255,255,0.3)] p-3 pt-0">
-          <UserMemories
-            userid={user.id!}
-            allposts={user.posts!}
-            savedposts={user.savedPosts!}
-          />
-        </section>
-      </main>
+    <div className="w-full md:w-[70%] mx-auto px-4 flex flex-col items-center">
+      <UserProfile
+        isFollowing={isFollowing}
+        isUserProfile={isUserProfile}
+        id={user.id}
+        image={user.image as string}
+        name={user.name as string}
+        username={user.username as string}
+        numPosts={user.posts.length}
+        followers={user.followedBy}
+        following={user.following}
+        bio={user.bio || "Tell something about yourself"}
+        sessionid={sessionUserId}
+      />
+      <UserMemories
+        userid={user.id}
+        sessionid={sessionUserId}
+        allposts={user.posts}
+        savedposts={user.savedPosts}
+      />
     </div>
   );
 }
 
-async function getUserinfo(username: string) {
+async function getUserInfo(username: string) {
   const user = await db.user.findUnique({
     where: {
       username: decodeURIComponent(username),
@@ -48,8 +55,32 @@ async function getUserinfo(username: string) {
           media: true,
         },
       },
-      followedBy: true,
-      following: true,
+      followedBy: {
+        select: {
+          followingId: true,
+          following: {
+            select: {
+              id: true,
+              name: true,
+              username: true,
+              image: true,
+            },
+          },
+        },
+      },
+      following: {
+        select: {
+          followedById: true,
+          followedBy: {
+            select: {
+              id: true,
+              name: true,
+              username: true,
+              image: true,
+            },
+          },
+        },
+      },
       savedPosts: {
         select: {
           id: true,

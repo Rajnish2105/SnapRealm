@@ -32,52 +32,62 @@ export default async function AllUsers() {
   });
 
   return (
-    <div className="w-full">
-      <div className="w-[300px] flex justify-between items-center my-3">
-        <h1 className="w-fit">You might know..</h1>
-        <Link className="text-sm w-fit text-end" href="/explore/people">
-          See All
-        </Link>
-      </div>
+    <div className="w-full max-w-sm mx-auto rounded-xl shadow-md overflow-hidden md:max-w-sm">
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-white">
+            You might know...
+          </h2>
+          <Link
+            href="/explore/people"
+            className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-200"
+          >
+            See All
+          </Link>
+        </div>
 
-      <ul className="flex w-[400px] flex-col space-y-1 flex-nowrap">
-        {users.map((user) => {
-          if (user.id === userId) return;
-          const isFollowing = user.following.length > 0;
-          return (
-            <li
-              className="px-3 py-2 text-white w-[80%] rounded-lg flex items-center justify-between"
-              key={user.id}
-            >
-              <Link href={`/${user.username}`}>
-                <div className="flex flex-grow items-center">
-                  <div className="w-11 h-11 rounded-full mr-2 flex justify-center overflow-hidden">
-                    <Image
-                      src={
-                        user.image
-                          ? user.image
-                          : `https://api.multiavatar.com/${user.name}.svg` ||
-                            "./defaultuser.svg"
-                      }
-                      alt="user image"
-                      width={45}
-                      height={20}
-                    />
-                  </div>
-                  <div className="text-xs flex flex-col justify-center">
-                    <p>{user.username}</p>
-                    <p className="text-[rgba(255,255,255,0.5)] pl-1">
-                      {user.name}
-                    </p>
-                  </div>
+        <ul className="space-y-3">
+          {users.map((user) => {
+            if (user.id === userId) return null;
+            const isFollowing = user.following.length > 0;
+
+            return (
+              <li
+                key={user.id}
+                className="rounded-lg overflow-hidden hover:bg-slate-700 transition-colors duration-200"
+              >
+                <div className="p-3 flex items-center justify-between">
+                  <Link
+                    href={`/${user.username}`}
+                    className="flex items-center space-x-3 flex-grow"
+                  >
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-500">
+                      <Image
+                        src={
+                          user.image ||
+                          `https://api.multiavatar.com/${user.name}.svg`
+                        }
+                        alt={`${user.name}'s avatar`}
+                        width={48}
+                        height={48}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">
+                        {user.username}
+                      </p>
+                      <p className="text-xs text-gray-400">{user.name}</p>
+                    </div>
+                  </Link>
+
+                  <FollowButton isFollowing={isFollowing} userId={user.id} />
                 </div>
-              </Link>
-
-              <FollowButton isFollowing={isFollowing} userId={user.id} />
-            </li>
-          );
-        })}
-      </ul>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

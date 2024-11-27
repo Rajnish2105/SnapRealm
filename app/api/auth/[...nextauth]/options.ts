@@ -5,6 +5,7 @@ import { NextAuthOptions } from "next-auth";
 import { db } from "@/lib/db";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -136,6 +137,7 @@ export const authOptions: NextAuthOptions = {
             provider: "google",
           },
         });
+        revalidatePath("/explore/people");
         redirect("/");
       } catch (err) {
         console.log("Couldn't authenticate the user", err);

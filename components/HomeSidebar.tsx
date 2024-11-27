@@ -20,9 +20,20 @@ import { useRecoilState } from "recoil";
 import { isSearching } from "@/states/atom";
 import SearchDialog from "./Search/SearchDialog";
 import SnapRealm from "./SnapRealm";
+import { User } from "next-auth";
 
-export function HomeSidebar({ children }: { children: React.ReactNode }) {
-  const { data: session } = useSession();
+export function HomeSidebar({
+  children,
+  username,
+  image,
+  name,
+}: {
+  children: React.ReactNode;
+  username: string;
+  name: string;
+  image: string;
+}) {
+  // const { data: session } = useSession();
   const [searchStatus, setSearchStatus] = useRecoilState(isSearching);
 
   const links = [
@@ -115,16 +126,15 @@ export function HomeSidebar({ children }: { children: React.ReactNode }) {
           <div>
             <SidebarLink
               link={{
-                label: session?.user?.username as string,
-                href: `/${session?.user?.username}`,
+                label: username as string,
+                href: `/${username}`,
                 icon: (
                   <Image
                     className="rounded-sm"
                     src={
-                      session?.user?.image
-                        ? session.user.image
-                        : `https://api.multiavatar.com/${session?.user?.name}.svg` ||
-                          "./defaultuser.svg"
+                      image ||
+                      `https://api.multiavatar.com/${name}.svg` ||
+                      "./defaultuser.svg"
                     }
                     alt="user image"
                     height={20}

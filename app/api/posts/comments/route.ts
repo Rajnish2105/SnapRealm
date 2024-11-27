@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     if (newComment) {
       // console.log("Now the revalidation is going to happen");
-      revalidatePath(`/${postId}`);
+      revalidatePath(`/post/${postId}`);
       return NextResponse.json(
         { message: "Create new Comment" },
         { status: 200 }

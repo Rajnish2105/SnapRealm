@@ -13,23 +13,56 @@ export async function GET() {
   const userId = parseInt(session?.user?.id as string);
 
   try {
-    const followers = await db.follows.findMany({
+    const user = await db.user.findUnique({
       where: {
-        followedById: userId,
+        id: userId,
       },
-      select: {
-        following: {
+      include: {
+        posts: {
           select: {
             id: true,
-            name: true,
-            username: true,
-            image: true,
+            media: true,
+          },
+        },
+        followedBy: {
+          select: {
+            following: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
+        following: {
+          select: {
+            followedBy: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
           },
         },
       },
     });
-    // console.log(followers);
-    return NextResponse.json({ followers }, { status: 200 });
+
+    const friends = user?.followedBy;
+    const fans = user?.following;
+
+    const followingids = friends?.map((friend) => friend.following.id);
+    const onlyfans = fans?.filter(
+      (fan) => !followingids?.includes(fan.followedBy.id)
+    );
+
+    // console.log("My friends", friends);
+    // console.log("my fans", onlyfans);
+
+    return NextResponse.json({ friends, onlyfans }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "no server" }, { status: 500 });

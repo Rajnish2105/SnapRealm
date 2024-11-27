@@ -84,10 +84,12 @@ export default async function AllPost() {
                     </div>
                     <p className="w-fit">{post.author.username}</p>
                     <div className="ml-2">
-                      <FollowButton
-                        isFollowing={isFollowing}
-                        userId={post.authorId}
-                      />
+                      {post.authorId != userId && (
+                        <FollowButton
+                          isFollowing={isFollowing}
+                          userId={post.authorId}
+                        />
+                      )}
                     </div>
                   </Link>
                   <PostDropDown

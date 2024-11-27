@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { IconHeart } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { Heart } from "lucide-react";
 
 export default function LikeButton({
   numberOfLikes,
@@ -51,19 +53,37 @@ export default function LikeButton({
   };
 
   return (
-    <>
+    <div className="flex flex-col items-center">
       <button
-        className="focus:outline-none"
+        className={cn(
+          "p-2 rounded-full transition-all duration-300 ease-in-out",
+          "hover:bg-red-100 dark:hover:bg-red-900/30",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-opacity-50",
+          loading && "animate-pulse"
+        )}
         onClick={handleLike}
         disabled={loading}
+        aria-label={liked ? "Unlike" : "Like"}
       >
-        <IconHeart
-          className={`h-6 w-6`}
-          stroke="red"
-          fill={liked ? "red" : "none"}
+        <Heart
+          className={cn(
+            "h-6 w-6 transition-all duration-300",
+            liked ? "fill-red-500 text-red-500" : "text-gray-500",
+            liked && "scale-110"
+          )}
         />
+        <span className="sr-only">{liked ? "Unlike" : "Like"}</span>
       </button>
-      <p className="text-center">{loading ? "..." : numLikes}</p>
-    </>
+      <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+        {loading ? (
+          <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        ) : (
+          <span className="inline-flex items-center">
+            {numLikes}
+            <span className="sr-only"> likes</span>
+          </span>
+        )}
+      </p>
+    </div>
   );
 }

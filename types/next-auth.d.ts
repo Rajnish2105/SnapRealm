@@ -4,7 +4,7 @@ import { DefaultSession, DefaultUser } from "next-auth";
 // Extend the default User and Session types
 declare module "next-auth" {
   interface User extends DefaultUser {
-    id?: number;
+    id: number;
     image?: string;
     username?: string;
     email?: string;

@@ -13,7 +13,6 @@ export default async function HomePage() {
   if (!session?.user) {
     redirect("/signin");
   }
-
   return (
     <div
       className="text-white w-full bg-black overflow-y-auto flex flex-wrap space-y-7 [&::-webkit-scrollbar]:w-2
@@ -36,7 +35,7 @@ export default async function HomePage() {
           <AllPost />
         </Suspense>
       </div>
-      <div className="w-[30%] hidden lg:flex lg:flex-col lg:space-y-5">
+      <div className="w-[35%] hidden lg:flex lg:flex-col lg:space-y-5 lg:items-start">
         <Suspense fallback={<UserLoader />}>
           <AllUsers />
         </Suspense>

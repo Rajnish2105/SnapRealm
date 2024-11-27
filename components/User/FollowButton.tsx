@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Loader2, UserPlus, UserMinus } from "lucide-react";
 
 export default function FollowButton({
   isFollowing,
@@ -15,41 +17,50 @@ export default function FollowButton({
 
   async function handleFollow() {
     setIsLoading(true);
-    setFollowStatus((prev) => !prev); //show
-    const res = await fetch(
-      `/api/user/follow?targetId=${userId}&followStatus=${followStatus}`,
-      {
-        method: "POST",
-      }
-    );
-    if (!res.ok) {
-      toast.error("Couldn't follow this account!!", {
-        closeButton: true,
-      });
-      console.log(res);
-      setFollowStatus((prev) => !prev); //db actual status
-      return;
-    }
-    setIsLoading(false);
-  }
+    setFollowStatus((prev) => !prev); // Optimistic update
 
-  if (isLoading) {
-    return (
-      <button
-        className="bg-transparent rounded-full outline-none px-2"
-        disabled
-      >
-        Loading....
-      </button>
-    );
+    try {
+      const res = await fetch(
+        `/api/user/follow?targetId=${userId}&followStatus=${followStatus}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to update follow status");
+      }
+    } catch (error) {
+      toast.error("Couldn't update follow status", {
+        description: "Please try again later.",
+      });
+      setFollowStatus((prev) => !prev); // Revert optimistic update
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
-    <button
+    <Button
       onClick={handleFollow}
-      className="bg-transparent rounded-full outline-none px-2 text-blue-500"
+      disabled={isLoading}
+      variant={followStatus ? "outline" : "default"}
+      size="sm"
+      className="w-24 h-8 text-xs font-semibold bg-transparent text-white hover:text-black"
     >
-      {followStatus ? "Unfollow" : "+Follow"}
-    </button>
+      {isLoading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : followStatus ? (
+        <>
+          <UserMinus className="mr-1 h-3 w-3" />
+          Unfollow
+        </>
+      ) : (
+        <>
+          <UserPlus className="mr-1 h-3 w-3" />
+          Follow
+        </>
+      )}
+    </Button>
   );
 }

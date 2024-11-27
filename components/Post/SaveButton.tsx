@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
 import { IconBookmark } from "@tabler/icons-react";
+import { Bookmark } from "lucide-react";
 import { toast } from "sonner";
+import CustomLoader from "../CustomLoader";
 
 export default function SaveButton({
   userId,
@@ -50,7 +52,11 @@ export default function SaveButton({
       onClick={handleClick}
       disabled={loading} // Disable button while loading
     >
-      {loading ? "..." : <IconBookmark fill={isSaved ? "white" : "none"} />}
+      {loading ? (
+        <CustomLoader />
+      ) : (
+        <Bookmark fill={isSaved ? "white" : "none"} />
+      )}
     </button>
   );
 }

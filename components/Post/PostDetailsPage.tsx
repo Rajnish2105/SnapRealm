@@ -1,14 +1,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-//ui
 import { PostDropDown } from "@/components/Post/PostDropDown";
-//next stuff
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-//database prisma
 import { db } from "@/lib/db";
-//my add-ons
 import PostImages from "@/components/PostImages";
 import LikeButton from "@/components/LikeButton";
 import NewCommentsForm from "@/components/Post/NewCommentForm";
@@ -17,140 +13,8 @@ import CommentButton from "@/components/CommentButton";
 import PostShare from "@/components/Post/PostShare";
 import SaveButton from "@/components/Post/SaveButton";
 import FollowButton from "@/components/User/FollowButton";
-
-export default async function PostDetailsPage({ postid }: { postid: string }) {
-  const session = await getServerSession(authOptions);
-  const userId = parseInt(session?.user?.id as string);
-
-  if (!session?.user) {
-    redirect("/signin");
-  }
-  if (!postid) {
-    return <div>Something went wrong!!</div>; // Simplified error handling
-  }
-
-  const currentUser = await getFollowerList(userId);
-  if (currentUser.error) {
-    return <div>{currentUser.error}</div>;
-  }
-
-  // const followingUserIds =
-  //   currentUser.data?.map((follow) => follow.followingId) || [];
-  // console.log("All the id", followingUserIds);
-
-  const post = await getCurrentPost(postid, userId);
-
-  if (post.error) {
-    return (
-      <div className="flex text-center justify-center items-center h-screen pt-auto">
-        Post not found.
-      </div>
-    );
-  }
-
-  if (post.data) {
-    // const followerLikes = post.data.likedby.filter((like) =>
-    //   followingUserIds!.includes(like.userId)
-    // );
-
-    const hasUserLikedIt = post.data.likedby.some(
-      (user) => user.user.id === userId
-    );
-    const hasUserSavedIt = post.data.savers.length > 0;
-    const isFollowing = post.data.author.following.length > 0;
-
-    return (
-      <div
-        className="w-full overflow-auto [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:bg-gray-100
-  [&::-webkit-scrollbar-thumb]:bg-gray-300
-  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 h-screen mt-2 flex flex-col space-y-3"
-      >
-        <div className="m-auto w-full flex flex-col min-w-[400px] max-w-[960px]">
-          <main className="flex-grow w-[80%] m-auto">
-            <div className="flex flex-col gap-4 p-4 relative">
-              <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400 items-center">
-                <Link
-                  className="flex justify-start items-center w-[250px]"
-                  href={`/${post.data?.author.username}`}
-                >
-                  <div className="w-10 h-10 rounded-full mr-2 flex justify-center overflow-hidden">
-                    <Image
-                      src={
-                        post.data.author.image !== null
-                          ? post.data.author.image
-                          : `https://api.multiavatar.com/${post.data.author
-                              .name!}.svg` || "/defaultuser.svg"
-                      }
-                      alt="user image"
-                      width={40}
-                      height={20}
-                    />
-                  </div>
-                  <p className="w-fit">{post.data.author.username}</p>
-                  <div className="ml-2">
-                    <FollowButton
-                      isFollowing={isFollowing}
-                      userId={post.data.authorId}
-                    />
-                  </div>
-                </Link>
-                <PostDropDown
-                  authorName={post.data.author.username!}
-                  postid={post.data.id}
-                  authorid={post.data.author.id}
-                />
-              </div>
-              <div className="w-full rounded-md overflow-hidden">
-                <PostImages images={post.data?.media} />
-              </div>
-              <div className="flex items-center gap-2">
-                <div>
-                  <LikeButton
-                    hasUserLikedIt={hasUserLikedIt}
-                    numberOfLikes={post.data._count.likedby}
-                    userId={session.user.id as string}
-                    postId={post.data?.id}
-                  />
-                </div>
-                <div>
-                  <CommentButton
-                    numComments={post.data._count.comments}
-                    postid={post.data.id}
-                  />
-                </div>
-                <button className="focus:outline-none">
-                  <PostShare postid={post.data.id} />
-                </button>
-                <SaveButton
-                  hasUserSavedIt={hasUserSavedIt}
-                  userId={session.user.id as string}
-                  postId={post.data.id}
-                />
-              </div>
-              <p className="text-sm text-gray-500">
-                Liked by{" "}
-                {post.data.likedby.length > 0 && (
-                  <strong className="font-medium text-gray-600">
-                    {post.data.likedby[0].user.username} and many others
-                  </strong>
-                )}
-              </p>
-              <div className="flex flex-col items-center gap-2">
-                <NewCommentsForm
-                  postid={postid}
-                  userid={session.user.id as string}
-                />
-                <AllComments postid={postid} />
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
-    );
-  }
-}
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 async function getFollowerList(userid: number) {
   if (!userid) {
@@ -189,7 +53,7 @@ async function getCurrentPost(postid: string, userId: number) {
             image: true,
             following: {
               where: {
-                followedById: userId, // current user's ID
+                followedById: userId,
               },
               select: {
                 followingId: true,
@@ -204,12 +68,12 @@ async function getCurrentPost(postid: string, userId: number) {
         },
         likedby: {
           include: {
-            user: true, // Include user details for all likes
+            user: true,
           },
         },
         savers: {
           where: {
-            id: userId, // Check if the user has saved this post
+            id: userId,
           },
         },
         _count: {
@@ -225,4 +89,150 @@ async function getCurrentPost(postid: string, userId: number) {
     console.error(err);
     return { error: "Not able to get current post at the moment!" };
   }
+}
+
+export default async function PostDetailsPage({ postid }: { postid: string }) {
+  const session = await getServerSession(authOptions);
+  const userId = parseInt(session?.user?.id as string);
+
+  if (!session?.user) {
+    redirect("/signin");
+  }
+
+  if (!postid) {
+    return <ErrorMessage message="Something went wrong!" />;
+  }
+
+  const currentUser = await getFollowerList(userId);
+  if (currentUser.error) {
+    return <ErrorMessage message={currentUser.error} />;
+  }
+
+  const post = await getCurrentPost(postid, userId);
+
+  if (post.error) {
+    return <ErrorMessage message="Post not found." />;
+  }
+
+  if (post.data) {
+    const hasUserLikedIt = post.data.likedby.some(
+      (user) => user.user.id === userId
+    );
+    const hasUserSavedIt = post.data.savers.length > 0;
+    const isFollowing = post.data.author.following.length > 0;
+
+    return (
+      <div className="min-h-screen w-full">
+        <div className="container mx-auto px-4 py-6">
+          <Card className="max-w-[1200px] mx-auto bg-card border-0">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr,400px]">
+              {/* Left Column - Post Content */}
+              <div className="flex flex-col">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <Link
+                      className="flex items-center gap-2 hover:opacity-80"
+                      href={`/${post.data?.author.username}`}
+                    >
+                      <div className="h-10 w-10 rounded-full overflow-hidden">
+                        <Image
+                          src={
+                            post.data.author.image ||
+                            `https://api.multiavatar.com/${post.data.author.name}.svg`
+                          }
+                          alt={`${post.data.author.username}'s avatar`}
+                          width={40}
+                          height={40}
+                          className="object-cover"
+                        />
+                      </div>
+                      <span className="font-medium">
+                        {post.data.author.username}
+                      </span>
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      {post.data.authorId !== userId && (
+                        <FollowButton
+                          isFollowing={isFollowing}
+                          userId={post.data.authorId}
+                        />
+                      )}
+                      <PostDropDown
+                        authorName={post.data.author.username!}
+                        postid={post.data.id}
+                        authorid={post.data.author.id}
+                      />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-1 p-0">
+                  <div className="overflow-hidden">
+                    <PostImages images={post.data?.media} />
+                  </div>
+                  <div className="p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <LikeButton
+                          hasUserLikedIt={hasUserLikedIt}
+                          numberOfLikes={post.data._count.likedby}
+                          userId={session.user.id as string}
+                          postId={post.data?.id}
+                        />
+                        <CommentButton
+                          numComments={post.data._count.comments}
+                          postid={post.data.id}
+                        />
+                        <PostShare postid={post.data.id} />
+                      </div>
+                      <SaveButton
+                        hasUserSavedIt={hasUserSavedIt}
+                        userId={session.user.id as string}
+                        postId={post.data.id}
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {post.data.likedby.length > 0 && (
+                        <>
+                          Liked by{" "}
+                          <span className="font-medium">
+                            {post.data.likedby[0].user.username}
+                          </span>{" "}
+                          {post.data.likedby.length > 1 &&
+                            `and ${post.data.likedby.length - 1} others`}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </CardContent>
+              </div>
+
+              {/* Right Column - Comments */}
+              <div className="border-l border-border">
+                <div className="p-4">
+                  <NewCommentsForm
+                    postid={postid}
+                    userid={session.user.id as string}
+                  />
+                </div>
+                {/* <Separator /> */}
+                <ScrollArea className="h-[600px] p-4">
+                  <AllComments postid={postid} />
+                </ScrollArea>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+}
+
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <div className="flex items-center justify-center h-[50vh] w-full">
+      <Card className="p-6">
+        <p className="text-lg text-muted-foreground">{message}</p>
+      </Card>
+    </div>
+  );
 }

@@ -2,10 +2,17 @@
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { HomeSidebar } from "./HomeSidebar";
+import { User } from "next-auth";
 
 export default function ConditionalWrapper({
   children,
+  username,
+  image,
+  name,
 }: {
+  username: string;
+  image: string;
+  name: string;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -17,7 +24,9 @@ export default function ConditionalWrapper({
 
   return (
     <main>
-      <HomeSidebar>{children}</HomeSidebar>
+      <HomeSidebar username={username} image={image} name={name}>
+        {children}
+      </HomeSidebar>
     </main>
   );
 }

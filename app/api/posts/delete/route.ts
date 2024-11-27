@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
 
     if (deletePost) {
       revalidatePath("/");
+      revalidatePath(`/post/${postId}`);
       return NextResponse.json(
         { message: "Post Deleted Successfully" },
         { status: 200 }

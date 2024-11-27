@@ -1,9 +1,11 @@
 "use client";
 
 import { isCommentPosted } from "@/states/atom";
+import { IconSend } from "@tabler/icons-react";
 import { useState, useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { toast } from "sonner";
+import CustomLoader from "../CustomLoader";
 
 export default function NewCommentsForm({
   postid,
@@ -14,6 +16,7 @@ export default function NewCommentsForm({
 }) {
   const setCommentPosted = useSetRecoilState(isCommentPosted);
   const [content, setContent] = useState<string>("");
+  const [isPosting, setIsPosting] = useState<boolean>(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -29,11 +32,12 @@ export default function NewCommentsForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!content || content.length === 0) {
+    if (!content || content.trim().length === 0) {
       return;
     }
 
     try {
+      setIsPosting(true);
       const response = await fetch(
         `/api/posts/comments?userId=${userid}&postId=${postid}`,
         {
@@ -60,6 +64,8 @@ export default function NewCommentsForm({
       toast.error("Error creating the comment", {
         closeButton: true,
       });
+    } finally {
+      setIsPosting(false);
     }
   }
 
@@ -76,10 +82,11 @@ export default function NewCommentsForm({
         ref={textAreaRef} // Assign the ref to the textarea
       />
       <button
+        disabled={!content.length || isPosting}
         type="submit"
-        className="px-4 py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200 h-10 ml-2"
+        className="px-4 py-2 rounded-md border border-black text-white text-sm transition duration-200 h-10 ml-2 cursor-pointer"
       >
-        Comment
+        {isPosting ? <CustomLoader /> : <IconSend />}
       </button>
     </form>
   );

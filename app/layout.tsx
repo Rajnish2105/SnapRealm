@@ -4,6 +4,9 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { Providers } from "@/provider";
 import ConditionalWrapper from "@/components/ConditionalWrapper";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,18 +31,30 @@ export const metadata: Metadata = {
   description: "Generated your own next Memories",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    redirect("/");
+  }
+
   return (
     <html lang="en">
       <body
         className={`${robotoMono.variable} ${geistSans.variable} ${geistMono.variable} antialiased dark text-white m-0`}
       >
         <Providers>
-          <ConditionalWrapper>{children}</ConditionalWrapper>
+          <ConditionalWrapper
+            username={session.user.username as string}
+            image={session?.user.image as string}
+            name={session.user.name as string}
+          >
+            {children}
+          </ConditionalWrapper>
         </Providers>
         <Toaster />
       </body>

@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-// import useSWR from "swr";
 import { toast } from "sonner";
 import { useRecoilValue } from "recoil";
 import { isCommentPosted } from "@/states/atom";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import CustomLoader from "../CustomLoader";
 
-// const fetcher = (url: string) =>
-//   fetch(url, { method: "GET" }).then((res) => res.json());
-
-type commentstype = {
+type CommentType = {
   id: number;
   content: string;
   postid: number;
@@ -25,71 +25,79 @@ type commentstype = {
 
 export default function AllComments({ postid }: { postid: string }) {
   const AllCommentsState = useRecoilValue(isCommentPosted);
-  const [comments, setComments] = useState<commentstype[] | never[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    async function fetchallcomments() {
+    setIsLoading(true);
+    async function fetchAllComments() {
       const res = await fetch(`/api/posts/comments?postId=${postid}`, {
         method: "GET",
       });
 
       const { comments, message } = await res.json();
       if (!res.ok) {
-        toast.error(`${message}`, {
+        toast.error(message, {
           closeButton: true,
         });
       }
       setComments(comments);
+      setIsLoading(false);
     }
-    fetchallcomments();
+    fetchAllComments();
   }, [AllCommentsState, postid]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <CustomLoader />
+      </div>
+    );
+  }
 
   if (comments.length === 0) {
     return (
-      <>
-        <div className="h-0.5 bg-white w-full rounded-sm my-3" />
-        <div className="text-[rgba(255,255,255,0.5)] flex justify-center items-center w-full">
-          Waiting for Your Comment...
-        </div>
-      </>
+      <div className="flex justify-center items-center w-full h-32 text-muted-foreground">
+        Waiting for Your Comment...
+      </div>
     );
   }
+
   return (
-    <div className="w-full overflow-hidden">
-      <div className="h-0.5 bg-white w-full rounded-md my-3" />
-      <ul className="flex flex-col space-y-4">
-        {comments.map((comment: commentstype) => {
-          return (
-            <li
-              className="flex flex-wrap relative bg-[rgba(130,130,130,0.34)] p-2 rounded-sm"
-              key={comment.id}
-            >
-              <div className="w-9 h-9 border-gray-100 border-2 rounded-full mr-2 flex justify-center overflow-hidden">
-                <Image
-                  src={
-                    comment.author.image
-                      ? comment.author.image
-                      : `https://api.multiavatar.com/${comment.author.name}.svg` ||
-                        "./defaultuser.svg"
-                  }
-                  alt="user image"
-                  height={20}
-                  width={35}
-                />
+    <ScrollArea className="h-[calc(100vh-200px)] w-full pr-4">
+      <div className="space-y-4">
+        {comments.map((comment: CommentType) => (
+          <Card key={comment.id} className="bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-4">
+                <Avatar className="w-10 h-10">
+                  <Image
+                    src={
+                      comment.author.image ||
+                      `https://api.multiavatar.com/${comment.author.name}.svg`
+                    }
+                    alt={`${comment.author.username}'s avatar`}
+                    fill
+                  />
+                </Avatar>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <Link
+                      href={`/${comment.author.username}`}
+                      className="font-medium text-sm hover:underline"
+                    >
+                      {comment.author.username}
+                    </Link>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {comment.content}
+                  </p>
+                </div>
               </div>
-              <div className="w-[100%-2.25rem]">
-                <Link
-                  className="h-fit flex-grow text-sm rounded-sm"
-                  href={`/${comment.author.username}`}
-                >
-                  {comment.author.username}
-                </Link>
-                <p>{comment.content}</p>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </ScrollArea>
   );
 }

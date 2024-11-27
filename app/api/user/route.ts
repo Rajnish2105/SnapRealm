@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import bcrypt from "bcrypt";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import * as z from "zod";
 
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
       },
     });
 
+    revalidatePath("/explore/people");
     return NextResponse.json(
       { message: "New User created successfully" },
       { status: 201 }

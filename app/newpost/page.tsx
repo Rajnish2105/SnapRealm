@@ -2,6 +2,8 @@ import NewPostForm from "@/components/customForm/NewPostForm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import CustomLoader from "@/components/CustomLoader";
 
 export default async function NewPostPage() {
   const session = await getServerSession(authOptions);
@@ -12,7 +14,9 @@ export default async function NewPostPage() {
 
   return (
     <main className="flex justify-center items-center h-screen w-screen">
-      <NewPostForm />
+      <Suspense fallback={<CustomLoader />}>
+        <NewPostForm />
+      </Suspense>
     </main>
   );
 }

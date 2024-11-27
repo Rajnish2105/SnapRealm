@@ -1,35 +1,102 @@
-import { Input } from "../ui/input";
-import NewPostSubmitButton from "./NewPostSubmitButton";
+"use client";
+
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { CreatePost } from "@/actions/CreatePostAction";
+import { Upload, ImageIcon, Type } from "lucide-react";
 
 export default function NewPostForm() {
+  const [fileNames, setFileNames] = useState<string[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      setFileNames(Array.from(files).map((file) => file.name));
+    }
+  };
+
   return (
-    <div className="w-[30%] rounded-sm bg-gray-500 p-5 text-dark bg-transparent border-2 border-white shadow-[0_0_4px_0_rgba(255,255,255,0.5)]">
-      <form action={CreatePost} className="flex flex-col space-y-5">
-        <div>
-          <Input type="file" id="media" name="media" multiple />
-        </div>
-        <div>
-          <Input
-            className="bg-transparent border-none outline-none"
-            type="text"
-            id="title"
-            name="title"
-          />
-        </div>
-        <div>
-          <textarea
-            className="dark bg-transparent text-white w-full h-24 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-y"
-            id="description"
-            name="description"
-            placeholder="Describe the post....."
-            rows={5}
-          />
-        </div>
-        <div className="flex justify-evenly items-center">
-          <NewPostSubmitButton />
-        </div>
-      </form>
-    </div>
+    <Card className="w-[90%] md:w-full max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Create New Post</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form action={CreatePost} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="media" className="flex items-center space-x-2">
+              <Upload className="w-5 h-5" />
+              <span>Upload Media</span>
+            </Label>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="file"
+                id="media"
+                name="media"
+                multiple
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => document.getElementById("media")?.click()}
+              >
+                Choose Files
+              </Button>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {fileNames.length > 0
+                  ? `${fileNames.length} file(s) selected`
+                  : "No files chosen"}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="title" className="flex items-center space-x-2">
+              <Type className="w-5 h-5" />
+              <span>Title</span>
+            </Label>
+            <Input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="Enter post title"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="description"
+              className="flex items-center space-x-2"
+            >
+              <ImageIcon className="w-5 h-5" />
+              <span>Description</span>
+            </Label>
+            <Textarea
+              id="description"
+              name="description"
+              placeholder="Describe your post..."
+              rows={5}
+            />
+          </div>
+
+          <CardFooter className="px-0">
+            <Button type="submit" className="w-full">
+              Create Post
+            </Button>
+          </CardFooter>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
