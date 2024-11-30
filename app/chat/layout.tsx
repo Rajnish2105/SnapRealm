@@ -62,7 +62,7 @@ export default function ChatPageLayout({
   async function handleUserClick(id: number) {
     const res = await fetch(`/api/inbox?targetId=${id}`);
     if (!res.ok) {
-      toast.error("Couldn't make inbox");
+      toast.error("Couldn't get inbox");
     }
     const reInbox = await res.json();
     console.log("the inbox", reInbox.inbox);
@@ -111,7 +111,7 @@ export default function ChatPageLayout({
                         <Image
                           src={
                             friend.following.image ||
-                            `https://api.multiavatar.com/${friend.following.name}.svg` ||
+                            `https://api.multiavatar.com/${friend.following.username}.svg` ||
                             "./defaultuser.svg"
                           }
                           alt="user image"
@@ -155,7 +155,7 @@ export default function ChatPageLayout({
                         <Image
                           src={
                             fan.followedBy.image ||
-                            `https://api.multiavatar.com/${fan.followedBy.name}.svg` ||
+                            `https://api.multiavatar.com/${fan.followedBy.username}.svg` ||
                             "./defaultuser.svg"
                           }
                           alt="user image"

@@ -74,7 +74,7 @@ export default function AllComments({ postid }: { postid: string }) {
                   <Image
                     src={
                       comment.author.image ||
-                      `https://api.multiavatar.com/${comment.author.name}.svg`
+                      `https://api.multiavatar.com/${comment.author.username}.svg`
                     }
                     alt={`${comment.author.username}'s avatar`}
                     fill

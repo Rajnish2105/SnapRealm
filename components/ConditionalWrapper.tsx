@@ -7,23 +7,21 @@ export default function ConditionalWrapper({
   children,
   username,
   image,
-  name,
 }: {
   username: string;
   image: string;
-  name: string;
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const noLayoutRoutes = ["/signin", "/signup", "/stories"];
+  const noLayoutRoutes = ["/signin", "/signup"];
 
-  if (noLayoutRoutes.includes(pathname)) {
+  if (noLayoutRoutes.includes(pathname) || pathname.startsWith("/stories")) {
     return <>{children}</>;
   }
 
   return (
     <main>
-      <HomeSidebar username={username} image={image} name={name}>
+      <HomeSidebar username={username} image={image}>
         {children}
       </HomeSidebar>
     </main>

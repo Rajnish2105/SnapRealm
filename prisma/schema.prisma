@@ -45,6 +45,7 @@ model User {
   bio         String?
   provider    String 
   createdAt   DateTime @default(now())
+  notification Boolean @default(false)
 
 //inboxes
   sender   Inbox[]   @relation("senderLink")

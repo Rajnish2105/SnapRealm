@@ -50,7 +50,7 @@ export default function UserProfile({
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
         <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
           <Image
-            src={image || `https://api.multiavatar.com/${name}.svg`}
+            src={image || `https://api.multiavatar.com/${username}.svg`}
             width={160}
             height={160}
             className="rounded-full border border-gray-300"

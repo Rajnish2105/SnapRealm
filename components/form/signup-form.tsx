@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
-import { IconBrandGoogle } from "@tabler/icons-react";
+import { IconBrandGoogle, IconEye, IconEyeClosed } from "@tabler/icons-react";
 import Link from "next/link";
 
 import { useForm } from "react-hook-form";
@@ -34,6 +34,11 @@ export default function SignupForm() {
     resolver: zodResolver(schema),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  function changeShowPassword() {
+    setShowPassword((prev) => !prev);
+  }
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -130,13 +135,27 @@ export default function SignupForm() {
             <p className="text-red-500">{errors.email.message}</p>
           )}
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
+        <LabelInputContainer className="mb-4 relative">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
-            placeholder="••••••••••••"
+            placeholder="**********"
             {...register("password")}
+            type={showPassword ? "text" : "password"}
           />
+          {showPassword ? (
+            <IconEye
+              stroke={2}
+              className="h-4 w-4 text-gray-500 absolute right-2 hover:bg-transparent top-7"
+              onClick={changeShowPassword}
+            />
+          ) : (
+            <IconEyeClosed
+              stroke={2}
+              className="h-4 w-4 text-gray-500 absolute right-2 hover:bg-transparent top-7"
+              onClick={changeShowPassword}
+            />
+          )}
           {errors.password && (
             <p className="text-red-500">{errors.password.message}</p>
           )}

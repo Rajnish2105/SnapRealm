@@ -138,7 +138,7 @@ export default async function PostDetailsPage({ postid }: { postid: string }) {
                         <Image
                           src={
                             post.data.author.image ||
-                            `https://api.multiavatar.com/${post.data.author.name}.svg`
+                            `https://api.multiavatar.com/${post.data.author.username}.svg`
                           }
                           alt={`${post.data.author.username}'s avatar`}
                           width={40}

@@ -19,7 +19,7 @@ export default async function AllStories() {
                 src={
                   session?.user?.image
                     ? session.user.image
-                    : `https://api.multiavatar.com/${session?.user?.name}.svg`
+                    : `https://api.multiavatar.com/${session?.user?.username}.svg`
                 }
                 alt="Your story"
                 className="rounded-full"
@@ -49,7 +49,7 @@ export default async function AllStories() {
                     <Image
                       src={
                         story.user.image ||
-                        `https://api.multiavatar.com/${story.user.name}.svg`
+                        `https://api.multiavatar.com/${story.user.username}.svg`
                       }
                       alt={story.user.name as string}
                       className="rounded-full"

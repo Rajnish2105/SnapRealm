@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { useSession } from "next-auth/react";
-import { User } from "next-auth";
 
 // Define the context type
 type WebSocketContextType = {

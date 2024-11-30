@@ -60,7 +60,7 @@ export default async function AllUsers() {
                       <Image
                         src={
                           user.image ||
-                          `https://api.multiavatar.com/${user.name}.svg`
+                          `https://api.multiavatar.com/${user.username}.svg`
                         }
                         alt={`${user.name}'s avatar`}
                         width={48}

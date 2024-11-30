@@ -20,20 +20,25 @@ import { useRecoilState } from "recoil";
 import { isSearching } from "@/states/atom";
 import SearchDialog from "./Search/SearchDialog";
 import SnapRealm from "./SnapRealm";
+import useSWR from "swr";
+
+const fetcher = async (url: string | URL | Request) => {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data.noti;
+};
 
 export function HomeSidebar({
   children,
   username,
   image,
-  name,
 }: {
   children: React.ReactNode;
   username: string;
-  name: string;
   image: string;
 }) {
-  // const { data: session } = useSession();
   const [searchStatus, setSearchStatus] = useRecoilState(isSearching);
+  const { data } = useSWR("/api/notification", fetcher);
 
   const links = [
     {
@@ -76,7 +81,12 @@ export function HomeSidebar({
       label: "Messages",
       href: "/chat",
       icon: (
-        <IconMessage className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <div className="relative">
+          {data && (
+            <div className="h-3 w-3 rounded-full bg-red-800 animate-ping absolute top-0 right-0" />
+          )}
+          <IconMessage className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        </div>
       ),
     },
     {
@@ -107,14 +117,13 @@ export function HomeSidebar({
   return (
     <div
       className={cn(
-        "rounded-md flex flex-col md:flex-row dark:bg-black w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
-        "h-screen"
+        "rounded-md flex flex-col md:flex-row dark:bg-black w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-screen"
       )}
     >
       <SearchDialog status={searchStatus} changeStatus={handleSearchSatus} />
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
-          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="flex flex-col flex-1 overflow-x-hidden">
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
@@ -132,7 +141,7 @@ export function HomeSidebar({
                     className="rounded-sm"
                     src={
                       image ||
-                      `https://api.multiavatar.com/${name}.svg` ||
+                      `https://api.multiavatar.com/${username}.svg` ||
                       "./defaultuser.svg"
                     }
                     alt="user image"

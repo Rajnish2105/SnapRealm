@@ -10,6 +10,7 @@ declare module "next-auth" {
     email?: string;
     password?: string;
     provider?: string; // Adding provider field
+    notification?: boolean;
   }
 
   interface Session {

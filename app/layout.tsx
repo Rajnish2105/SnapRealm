@@ -50,7 +50,6 @@ export default async function RootLayout({
           <ConditionalWrapper
             username={session?.user?.username as string}
             image={session?.user?.image as string}
-            name={session?.user?.name as string}
           >
             {children}
           </ConditionalWrapper>

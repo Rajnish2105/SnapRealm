@@ -33,6 +33,13 @@ type chattype = {
   content: string;
 };
 
+type mytype = {
+  id: number;
+  name: string | null;
+  username: string;
+  image: string | null;
+};
+
 export default function ChatRoomPage({
   params,
 }: {
@@ -48,11 +55,8 @@ export default function ChatRoomPage({
   if (!inboxId) {
     router.push("/signup");
   }
-
-  console.log("chat user", user);
-
+  // console.log("chat user", user);
   const userid = Number(user?.id as string);
-
   const [chat, setChat] = useState<chattype[]>();
 
   useEffect(() => {
@@ -63,8 +67,20 @@ export default function ChatRoomPage({
         toast.error("Couldn't find the inbox");
       }
       const { Inbox } = await res.json();
-
       // console.log("the found Inbox");
+      let me: mytype;
+      if (Inbox.receiver.id != userid) me = Inbox.sender;
+      else me = Inbox.reciver;
+      const res2 = await fetch(
+        `/api/notification?changeTo=${false}&target=${me.username}`,
+        {
+          method: "PUT",
+        }
+      );
+      if (!res2.ok) {
+        console.log("couldn't update the notification state");
+      }
+
       setInbox(Inbox);
       setChat(Inbox.messages);
       setIsLoading(false);
@@ -82,7 +98,7 @@ export default function ChatRoomPage({
         console.log(type, data);
         if (type === `inbox/${inboxId}`) {
           if (chat?.length === 0) {
-            setChat([{ senderId: data.senderId, content: data.content }]);
+            setChat([{ senderId: data.senderId, content: data.message }]);
           } else {
             setChat((prev) => [
               ...prev!,
@@ -119,11 +135,25 @@ export default function ChatRoomPage({
       body: JSON.stringify({ msg: msgState }),
     });
 
+    let me: mytype;
+    if (inbox?.receiver.id == userid) me = inbox.sender;
+    else me = inbox?.receiver as mytype;
+    const res2 = await fetch(
+      `/api/notification?changeTo=${true}&target=${me.username}`,
+      {
+        method: "PUT",
+      }
+    );
+
     sendMessage("send-msg-to", {
       inboxId: inboxId,
       message: msgState,
       senderId: userid,
     });
+
+    if (!res2.ok) {
+      console.log("couldn't update the notification state");
+    }
 
     if (!res.ok) {
       const { message } = await res.json();
@@ -143,12 +173,7 @@ export default function ChatRoomPage({
   }
 
   if (inbox) {
-    let me: {
-      id: number;
-      name: string | null;
-      username: string;
-      image: string | null;
-    };
+    let me: mytype;
     if (inbox.receiver.id != userid) me = inbox.receiver;
     else me = inbox.sender;
     return (
@@ -160,10 +185,9 @@ export default function ChatRoomPage({
                 <div className="w-11 h-11 rounded-full mr-2 flex justify-center overflow-hidden">
                   <Image
                     src={
-                      me.image
-                        ? me.image
-                        : `https://api.multiavatar.com/${me.name}.svg` ||
-                          "./defaultuser.svg"
+                      me.image ||
+                      `https://api.multiavatar.com/${me.username}.svg` ||
+                      "./defaultuser.svg"
                     }
                     alt="user image"
                     width={45}

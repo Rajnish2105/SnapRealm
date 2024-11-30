@@ -65,7 +65,7 @@ export function FollowerPopUp({ followers }: { followers: Followertype }) {
                   <Image
                     src={
                       follower.followedBy.image ||
-                      `https://api.multiavatar.com/${follower.followedBy.name}.svg`
+                      `https://api.multiavatar.com/${follower.followedBy.username}.svg`
                     }
                     width={160}
                     height={160}
@@ -121,7 +121,7 @@ export function FollowingPopUp({ following }: { following: Followingtype }) {
                   <Image
                     src={
                       followedUser.following.image ||
-                      `https://api.multiavatar.com/${followedUser.following.name}.svg`
+                      `https://api.multiavatar.com/${followedUser.following.username}.svg`
                     }
                     width={160}
                     height={160}

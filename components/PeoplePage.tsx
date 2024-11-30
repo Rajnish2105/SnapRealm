@@ -52,7 +52,7 @@ export default async function PeoplePage() {
                           <Image
                             src={
                               user.image ||
-                              `https://api.multiavatar.com/${user.name}.svg` ||
+                              `https://api.multiavatar.com/${user.username}.svg` ||
                               "/defaultuser.svg"
                             }
                             alt={`${user.name}'s profile picture`}

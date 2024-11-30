@@ -110,7 +110,7 @@ export default async function StoryPage({
         currentStoryonShow?.user.name || "know more about this user..",
       profileImage:
         currentStoryonShow?.user.image ||
-        `https://api.multiavatar.com/${currentStoryonShow?.user?.name}.svg`,
+        `https://api.multiavatar.com/${currentStoryonShow?.user?.username}.svg`,
     },
   }));
 

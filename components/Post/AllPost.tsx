@@ -50,7 +50,7 @@ export default async function AllPost() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col space-y-7">
+    <div className="w-full h-full flex flex-col space-y-7">
       {allPosts.map(async (post) => {
         const hasUserLikedIt = post.likedby.some(
           (like) => like.userId === userId
@@ -75,7 +75,7 @@ export default async function AllPost() {
                           post.author.image !== null
                             ? post.author.image
                             : `https://api.multiavatar.com/${post.author
-                                .name!}.svg` || "/defaultuser.svg"
+                                .username!}.svg` || "/defaultuser.svg"
                         }
                         alt="user image"
                         width={40}
@@ -116,9 +116,9 @@ export default async function AllPost() {
                       postid={post.id}
                     />
                   </div>
-                  <button className="focus:outline-none">
+                  <div className="focus:outline-none">
                     <PostShare postid={post.id} />
-                  </button>
+                  </div>
                   <SaveButton
                     hasUserSavedIt={hasUserSavedIt}
                     userId={session?.user?.id as string}
