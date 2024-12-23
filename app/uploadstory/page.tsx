@@ -1,15 +1,15 @@
-"use client";
+'use client';
 import {
   IconFocusCentered,
   IconSend,
   IconTrash,
   IconUpload,
-} from "@tabler/icons-react";
-import { useSession } from "next-auth/react";
-import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import Image from "next/image";
+} from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 export default function UploadStory() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function UploadStory() {
   const session = useSession();
 
   if (!session.data?.user) {
-    router.push("/signup");
+    router.push('/signup');
   }
 
   // Function to open the camera
@@ -36,14 +36,14 @@ export default function UploadStory() {
 
         videoRef.current.onloadedmetadata = () => {
           videoRef.current!.play().catch((error) => {
-            console.error("Video play error:", error);
+            console.error('Video play error:', error);
           });
           setIsCameraReady(true);
         };
       }
     } catch (error) {
-      console.error("Error accessing camera:", error);
-      alert("Unable to access camera. Please check permissions.");
+      console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please check permissions.');
     }
   };
 
@@ -52,7 +52,7 @@ export default function UploadStory() {
     if (videoRef.current?.srcObject) {
       const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
       tracks.forEach((track) => track.stop());
-      console.log("Camera stopped");
+      console.log('Camera stopped');
     }
   };
 
@@ -80,7 +80,7 @@ export default function UploadStory() {
   // Capture photo function
   const capturePhoto = () => {
     if (canvasRef.current && videoRef.current) {
-      const context = canvasRef.current.getContext("2d");
+      const context = canvasRef.current.getContext('2d');
       canvasRef.current.width = videoRef.current.videoWidth;
       canvasRef.current.height = videoRef.current.videoHeight;
 
@@ -91,7 +91,7 @@ export default function UploadStory() {
         0
       );
 
-      const dataUrl = canvasRef.current.toDataURL("image/png");
+      const dataUrl = canvasRef.current.toDataURL('image/png');
       setCapturedPhoto(dataUrl);
 
       stopCamera();
@@ -105,7 +105,7 @@ export default function UploadStory() {
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        if (typeof reader.result === "string") {
+        if (typeof reader.result === 'string') {
           setCapturedPhoto(reader.result);
 
           stopCamera();
@@ -129,24 +129,24 @@ export default function UploadStory() {
       const formData = new FormData();
       const response = await fetch(capturedPhoto);
       const blob = await response.blob();
-      formData.append("image", blob, "captured-image.png");
+      formData.append('image', blob, 'captured-image.png');
 
       try {
-        const res = await fetch("/api/user/stories", {
-          method: "POST",
+        const res = await fetch('/api/user/stories', {
+          method: 'POST',
           body: formData,
         });
 
         if (res.ok) {
-          console.log("Image uploaded successfully");
+          console.log('Image uploaded successfully');
         } else {
-          console.error("Image upload failed");
+          console.error('Image upload failed');
         }
       } catch (error) {
-        console.error("Error uploading image:", error);
+        console.error('Error uploading image:', error);
         toast.error("Couldn't upload your image right!", { closeButton: true });
       } finally {
-        router.push("/"); // Redirect after upload
+        router.push('/'); // Redirect after upload
       }
     }
   }
@@ -217,6 +217,7 @@ export default function UploadStory() {
               className="text-white px-6 py-3 rounded border-2 shadow-md flex"
             >
               Discard <IconTrash />
+              zzzzzz
             </button>
           </>
         )}

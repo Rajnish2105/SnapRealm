@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { IconSettings, IconSend } from "@tabler/icons-react";
-import Link from "next/link";
-import Image from "next/image";
-import { toast } from "sonner";
-import { useWebSocket } from "@/context/SocketContext";
-import CustomLoader from "@/components/CustomLoader";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from 'react';
+import { IconSettings, IconSend } from '@tabler/icons-react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import { useWebSocket } from '@/context/SocketContext';
+import CustomLoader from '@/components/CustomLoader';
+import { useRouter } from 'next/navigation';
+import SpeechRecognitionButton from '@/components/Search/SpeechRecognitionButton';
 
 type inboxtype = {
   id: number;
@@ -47,17 +48,31 @@ export default function ChatRoomPage({
 }) {
   const router = useRouter();
   const { socket, user, sendMessage } = useWebSocket();
-  const [msgState, setMsgState] = useState<string>("");
+  const [msgState, setMsgState] = useState<string>('');
   const [inbox, setInbox] = useState<inboxtype>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { inboxId } = params;
 
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  };
+
   if (!inboxId) {
-    router.push("/signup");
+    router.push('/signup');
   }
   // console.log("chat user", user);
   const userid = Number(user?.id as string);
   const [chat, setChat] = useState<chattype[]>();
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -74,7 +89,7 @@ export default function ChatRoomPage({
       const res2 = await fetch(
         `/api/notification?changeTo=${false}&target=${me.username}`,
         {
-          method: "PUT",
+          method: 'PUT',
         }
       );
       if (!res2.ok) {
@@ -90,7 +105,7 @@ export default function ChatRoomPage({
 
   useEffect(() => {
     if (socket) {
-      console.log("here");
+      console.log('here');
       socket.onmessage = async (event) => {
         console.log(JSON.parse(event.data));
 
@@ -113,7 +128,7 @@ export default function ChatRoomPage({
   // console.log("the chat", chat);
 
   useEffect(() => {
-    sendMessage("join-inbox", { userId: userid, inboxId: inboxId });
+    sendMessage('join-inbox', { userId: userid, inboxId: inboxId });
   }, [inboxId, sendMessage, userid]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -128,9 +143,9 @@ export default function ChatRoomPage({
     }
 
     const res = await fetch(`/api/inbox/sendmsg?inboxId=${inboxId}`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ msg: msgState }),
     });
@@ -141,11 +156,11 @@ export default function ChatRoomPage({
     const res2 = await fetch(
       `/api/notification?changeTo=${true}&target=${me.username}`,
       {
-        method: "PUT",
+        method: 'PUT',
       }
     );
 
-    sendMessage("send-msg-to", {
+    sendMessage('send-msg-to', {
       inboxId: inboxId,
       message: msgState,
       senderId: userid,
@@ -161,7 +176,7 @@ export default function ChatRoomPage({
       return;
     }
 
-    setMsgState("");
+    setMsgState('');
   }
 
   if (isLoading) {
@@ -187,7 +202,7 @@ export default function ChatRoomPage({
                     src={
                       me.image ||
                       `https://api.multiavatar.com/${me.username}.svg` ||
-                      "./defaultuser.svg"
+                      './defaultuser.svg'
                     }
                     alt="user image"
                     width={45}
@@ -197,7 +212,7 @@ export default function ChatRoomPage({
                 <div className="text-xs flex flex-col justify-center">
                   <p>{me.username}</p>
                   <p className="text-[rgba(255,255,255,0.5)]">
-                    {me.name || "Know more about this user..."}
+                    {me.name || 'Know more about this user...'}
                   </p>
                 </div>
               </div>
@@ -207,14 +222,17 @@ export default function ChatRoomPage({
               <IconSettings />
             </div>
           </div>
-          <div className="_allmessages flex h-[79%] h-min-full flex-col overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+          <div
+            ref={scrollContainerRef}
+            className="_allmessages flex h-[79%] h-min-full flex-col overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+          >
             {chat &&
               chat.map((msg, i) => {
                 return (
                   <div
                     key={i}
                     className={`w-full h-fit flex ${
-                      msg.senderId == userid ? "justify-end" : "justify-start"
+                      msg.senderId == userid ? 'justify-end' : 'justify-start'
                     }`}
                   >
                     <p
@@ -229,13 +247,16 @@ export default function ChatRoomPage({
           </div>
           <div className="w-full py-3 px-5">
             <form onSubmit={SendMsg} className="flex items-center">
-              <input
-                value={msgState}
-                onChange={handleChange}
-                type="text"
-                autoFocus
-                className="border border-[rbga(255,255,255,0.7)] rounded-full mx-2 p-2 pl-4 inline-block bg-transparent flex-grow"
-              />
+              <div className="border border-gray-500 rounded-full mx-2 p-2 flex bg-transparent flex-grow justify-between">
+                <input
+                  value={msgState}
+                  onChange={handleChange}
+                  type="text"
+                  autoFocus
+                  className="w-full outline-none border-none pl-1 bg-transparent"
+                />
+                <SpeechRecognitionButton msgStateUpdater={setMsgState} />
+              </div>
               <button
                 type="submit"
                 className="border-none outline-none bg-transparent"

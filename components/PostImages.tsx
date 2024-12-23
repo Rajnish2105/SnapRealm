@@ -1,7 +1,7 @@
-"use client";
-import { motion } from "framer-motion";
-import React from "react";
-import { ImagesSlider } from "./ui/images-slider";
+'use client';
+import { motion } from 'framer-motion';
+import React from 'react';
+import { ImagesSlider } from './ui/images-slider';
 
 export default function PostImages({ images }: { images: string[] }) {
   return (

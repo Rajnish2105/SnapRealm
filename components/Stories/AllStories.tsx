@@ -1,9 +1,9 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { db } from "@/lib/db";
-import { IconPlus } from "@tabler/icons-react";
-import { getServerSession } from "next-auth";
-import Image from "next/image";
-import Link from "next/link";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { db } from '@/lib/db';
+import { IconPlus } from '@tabler/icons-react';
+import { getServerSession } from 'next-auth';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function AllStories() {
   const session = await getServerSession(authOptions);
@@ -14,16 +14,15 @@ export default async function AllStories() {
       <div className="flex items-start space-x-4 p-4">
         <div className="flex flex-col items-center">
           <div className="relative mb-1">
-            <div className="w-16 h-16 rounded-full border-2 border-gray-200 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full border-2 border-gray-200 flex items-center justify-center overflow-hidden">
               <Image
                 src={
-                  session?.user?.image
-                    ? session.user.image
-                    : `https://api.multiavatar.com/${session?.user?.username}.svg`
+                  session?.user?.image ||
+                  `https://api.multiavatar.com/${session?.user?.username}.svg`
                 }
                 alt="Your story"
                 className="rounded-full"
-                width={56}
+                width={60}
                 height={56}
               />
             </div>

@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { CreatePost } from "@/actions/CreatePostAction";
-import { Upload, ImageIcon, Type } from "lucide-react";
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { CreatePost } from '@/actions/CreatePostAction';
+import { Upload, ImageIcon, Type } from 'lucide-react';
 
 export default function NewPostForm() {
   const [fileNames, setFileNames] = useState<string[]>([]);
@@ -49,14 +49,14 @@ export default function NewPostForm() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => document.getElementById("media")?.click()}
+                onClick={() => document.getElementById('media')?.click()}
               >
                 Choose Files
               </Button>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {fileNames.length > 0
                   ? `${fileNames.length} file(s) selected`
-                  : "No files chosen"}
+                  : 'No files chosen'}
               </span>
             </div>
           </div>

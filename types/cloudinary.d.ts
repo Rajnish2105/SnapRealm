@@ -1,1 +1,1 @@
-declare module "cloudinary";
+declare module 'cloudinary';

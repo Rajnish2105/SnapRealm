@@ -18,7 +18,7 @@ export async function GET() {
       },
     });
 
-    console.log("user found", user);
+    // console.log("user found", user);
 
     return NextResponse.json({ noti: user?.notification }, { status: 200 });
   } catch (err) {

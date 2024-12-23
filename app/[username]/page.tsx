@@ -1,9 +1,9 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/options";
-import { redirect } from "next/navigation";
-import CustomLoader from "@/components/CustomLoader";
-import { Suspense } from "react";
-import User from "@/components/User/User";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/options';
+import { redirect } from 'next/navigation';
+import CustomLoader from '@/components/CustomLoader';
+import { Suspense } from 'react';
+import User from '@/components/User/User';
 
 export default async function UserPage({
   params,
@@ -14,7 +14,7 @@ export default async function UserPage({
   const { username } = params;
 
   if (!session?.user) {
-    redirect("/");
+    redirect('/');
   }
 
   return (
@@ -26,11 +26,8 @@ export default async function UserPage({
       }
     >
       <main
-        className="w-full h-full overflow-auto [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:bg-gray-100
-  [&::-webkit-scrollbar-thumb]:bg-gray-300
-  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+        className="w-full h-full overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300
+  dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
       >
         <User username={username} />
       </main>

@@ -1,18 +1,18 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { db } from "@/lib/db";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import FollowButton from "@/components/User/FollowButton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent } from "@/components/ui/card";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { db } from '@/lib/db';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import FollowButton from '@/components/User/FollowButton';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default async function PeoplePage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/");
+    redirect('/');
   }
   const allUsers = await db.user.findMany({
     include: {
@@ -53,7 +53,7 @@ export default async function PeoplePage() {
                             src={
                               user.image ||
                               `https://api.multiavatar.com/${user.username}.svg` ||
-                              "/defaultuser.svg"
+                              '/defaultuser.svg'
                             }
                             alt={`${user.name}'s profile picture`}
                             width={48}

@@ -1,7 +1,7 @@
-"use client";
-import { ReactNode } from "react";
-import { usePathname } from "next/navigation";
-import { HomeSidebar } from "./HomeSidebar";
+'use client';
+import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import { HomeSidebar } from './HomeSidebar';
 
 export default function ConditionalWrapper({
   children,
@@ -9,13 +9,13 @@ export default function ConditionalWrapper({
   image,
 }: {
   username: string;
-  image: string;
+  image: string | null;
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const noLayoutRoutes = ["/signin", "/signup"];
+  const noLayoutRoutes = ['/signin', '/signup'];
 
-  if (noLayoutRoutes.includes(pathname) || pathname.startsWith("/stories")) {
+  if (noLayoutRoutes.includes(pathname) || pathname.startsWith('/stories')) {
     return <>{children}</>;
   }
 

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Grid, Bookmark } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Grid, Bookmark } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function UserMemories({
   allposts,
@@ -60,8 +60,10 @@ function PostGrid({ posts }: { posts: { id: number; media: string[] }[] }) {
               <Image
                 src={post.media[0]}
                 alt={`Post ${post.id}`}
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes="auto"
+                priority
+                style={{ objectFit: 'cover' }}
               />
             </div>
           </Link>
@@ -77,7 +79,7 @@ function Empty({ what }: { what: string }) {
     <div className="w-full py-8 text-center text-gray-500">
       No Memories Yet..
       <Link className="text-blue-500 hover:underline" href="/post">
-        {" "}
+        {' '}
         {what} New Memories
       </Link>
     </div>

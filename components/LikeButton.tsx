@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { Heart } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { Heart } from 'lucide-react';
 
 export default function LikeButton({
   numberOfLikes,
@@ -33,7 +33,7 @@ export default function LikeButton({
       const response = await fetch(
         `/api/posts/like?postId=${postId}&userId=${userId}`,
         {
-          method: "POST",
+          method: 'POST',
         }
       );
 
@@ -45,7 +45,7 @@ export default function LikeButton({
       setLiked(data.liked);
       setNumLikes((prev) => (data.liked ? prev + 1 : prev - 1));
     } catch (error) {
-      console.error("Error liking post:", error);
+      console.error('Error liking post:', error);
     } finally {
       setLoading(false);
     }
@@ -55,23 +55,23 @@ export default function LikeButton({
     <div className="flex flex-col items-center">
       <button
         className={cn(
-          "p-2 rounded-full transition-all duration-300 ease-in-out",
-          "hover:bg-red-100 dark:hover:bg-red-900/30",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-opacity-50",
-          loading && "animate-pulse"
+          'p-2 rounded-full transition-all duration-300 ease-in-out',
+          'hover:bg-red-100 dark:hover:bg-red-900/30',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-opacity-50',
+          loading && 'animate-pulse'
         )}
         onClick={handleLike}
         disabled={loading}
-        aria-label={liked ? "Unlike" : "Like"}
+        aria-label={liked ? 'Unlike' : 'Like'}
       >
         <Heart
           className={cn(
-            "h-6 w-6 transition-all duration-300",
-            liked ? "fill-red-500 text-red-500" : "text-gray-500",
-            liked && "scale-110"
+            'h-6 w-6 transition-all duration-300',
+            liked ? 'fill-red-500 text-red-500' : 'text-gray-500',
+            liked && 'scale-110'
           )}
         />
-        <span className="sr-only">{liked ? "Unlike" : "Like"}</span>
+        <span className="sr-only">{liked ? 'Unlike' : 'Like'}</span>
       </button>
       <p className="mt-1 text-sm font-medium text-gray-700 dark:text-gray-300">
         {loading ? (

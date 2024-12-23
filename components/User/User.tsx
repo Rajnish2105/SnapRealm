@@ -8,7 +8,7 @@ export default async function User({ username }: { username: string }) {
   const session = await getServerSession(authOptions);
   const user = await getUserInfo(username);
 
-  console.log("session user", session?.user);
+  // console.log("session user", session?.user);
 
   if (!user) {
     return <div className="text-center py-8">No such user exists</div>;
@@ -26,7 +26,7 @@ export default async function User({ username }: { username: string }) {
         isFollowing={isFollowing}
         isUserProfile={isUserProfile}
         id={user.id}
-        image={user.image as string}
+        image={user.image || null}
         name={user.name as string}
         username={user.username as string}
         numPosts={user.posts.length}

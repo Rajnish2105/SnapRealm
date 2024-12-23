@@ -1,10 +1,9 @@
-"use client";
-
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
-import FollowButton from "./User/FollowButton";
-import { FollowerPopUp, FollowingPopUp } from "./User/FollowList";
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { Settings } from 'lucide-react';
+import FollowButton from './User/FollowButton';
+import { FollowerPopUp, FollowingPopUp } from './User/FollowList';
+import Link from 'next/link';
 
 export default function UserProfile({
   id,
@@ -43,17 +42,16 @@ export default function UserProfile({
   numPosts: number;
   username: string;
   name: string;
-  image: string;
+  image: string | null;
 }) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
-        <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0">
+        <div className="w-32 h-32 md:w-40 md:h-40 flex-shrink-0 overflow-hidden rounded-full border-2 border-gray-300 shadow-md">
           <Image
             src={image || `https://api.multiavatar.com/${username}.svg`}
             width={160}
             height={160}
-            className="rounded-full border border-gray-300"
             alt={`${name}'s profile picture`}
             priority
           />
@@ -63,19 +61,24 @@ export default function UserProfile({
             <h1 className="text-xl font-normal">{username}</h1>
             <div className="flex gap-2">
               {isUserProfile ? (
-                <Button
-                  variant="secondary"
-                  className="h-8 text-sm font-semibold"
-                >
-                  Edit Profile
-                </Button>
+                <>
+                  <Link href={`/${username}/settings`}>
+                    <Button
+                      variant="secondary"
+                      className="h-8 text-sm font-semibold"
+                    >
+                      Edit Profile
+                    </Button>
+                  </Link>
+                  <Link href={`/${username}/settings`}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Settings className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                </>
               ) : (
                 <FollowButton userId={id} isFollowing={isFollowing} />
               )}
-
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Settings className="h-5 w-5" />
-              </Button>
             </div>
           </div>
           <div className="flex justify-center md:justify-start gap-8 mb-4">

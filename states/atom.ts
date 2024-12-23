@@ -1,11 +1,11 @@
-import { atom } from "recoil";
+import { atom } from 'recoil';
 
 export const isCommentPosted = atom<boolean>({
-  key: "commentAtom",
+  key: 'commentAtom',
   default: false,
 });
 
 export const isSearching = atom<boolean>({
-  key: "searchingAtom",
+  key: 'searchingAtom',
   default: false,
 });

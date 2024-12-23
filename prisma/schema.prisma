@@ -33,6 +33,8 @@ model Post {
 
   //likes
   likedby     Likedby[] // The users who liked this post
+
+  @@index([id])
 }
 
 model User {
@@ -69,6 +71,10 @@ model User {
 
   //liked posts
   likes       Likedby[] // The posts liked by the user
+
+  @@index([username])
+  @@index([id])
+  @@index([email])
 }
 
 model Likedby {
@@ -79,6 +85,7 @@ model Likedby {
   postId    Int
 
   @@id([userId, postId]) // Composite primary key to prevent duplicate likes by the same user on the same post
+  @@index([userId, postId])
 }
 
 model Follows {
@@ -101,6 +108,8 @@ model Comment {
   postId  Int
   author  User     @relation(fields: [authorId], references: [id], onDelete: Cascade, name: "UserComments")
   authorId Int
+
+
 }
 
 model Story {
@@ -109,6 +118,8 @@ model Story {
   createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([id])
 }
 
 model Inbox {
@@ -121,6 +132,9 @@ model Inbox {
   sender        User        @relation("senderLink", fields: [senderId], references: [id])
   receiver      User        @relation("receiverLink", fields: [receiverId], references: [id])
   messages      Message[]   // Link to multiple messages within this conversation
+
+  @@index([id])
+  @@index([senderId,receiverId])
 }
 
 model Message {

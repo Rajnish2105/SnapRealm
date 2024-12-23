@@ -1,9 +1,20 @@
-"use client";
-import { cn } from "@/lib/utils";
-import Link, { LinkProps } from "next/link";
-import React, { useState, createContext, useContext } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+'use client';
+import { cn } from '@/lib/utils';
+import Link, { LinkProps } from 'next/link';
+import React, { useState, createContext, useContext, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import {
+  IconCamera,
+  IconHome,
+  IconMessage,
+  IconSearch,
+  IconUser,
+} from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
+import { useRecoilState } from 'recoil';
+import { isSearching } from '@/states/atom';
+import SearchDialog from '../Search/SearchDialog';
+import { usePathname } from 'next/navigation';
 
 interface Links {
   label: string;
@@ -25,7 +36,7 @@ const SidebarContext = createContext<SidebarContextProps | undefined>(
 export const useSidebar = () => {
   const context = useContext(SidebarContext);
   if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider");
+    throw new Error('useSidebar must be used within a SidebarProvider');
   }
   return context;
 };
@@ -75,7 +86,7 @@ export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
   return (
     <>
       <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
+      <MobileSidebar {...(props as React.ComponentProps<'div'>)} />
     </>
   );
 };
@@ -90,11 +101,11 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden bg-white md:flex md:flex-col dark:bg-black w-[300px] flex-shrink-0",
+          'h-full px-4 py-4 hidden bg-white md:flex md:flex-col dark:bg-black w-[300px] flex-shrink-0',
           className
         )}
         animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
+          width: animate ? (open ? '300px' : '60px') : '300px',
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -108,19 +119,66 @@ export const DesktopSidebar = ({
 
 export const MobileSidebar = ({
   className,
-  children,
   ...props
-}: React.ComponentProps<"div">) => {
-  const { open, setOpen } = useSidebar();
+}: React.ComponentProps<'div'>) => {
+  // const { open, setOpen } = useSidebar();
+  const session = useSession();
+  const path = usePathname();
+  const [active, setActive] = useState<number>();
+  const [searchStatus, setSearchStatus] = useRecoilState(isSearching);
+
+  useEffect(() => {
+    if (path === '/') setActive(0);
+    else if (path.startsWith('/newpost')) setActive(2);
+    else if (path.startsWith(`/${session.data?.user?.username}`)) setActive(4);
+    else if (path.startsWith('/chat')) setActive(3);
+    else setActive(1);
+  });
+
+  const icons = [
+    { link: '/', icon: <IconHome size={30} /> },
+    { link: '', icon: <IconSearch size={30} onClick={handleSearchSatus} /> },
+    {
+      link: '/newpost',
+      icon: <IconCamera size={30} />,
+    },
+    {
+      link: '/chat',
+      icon: <IconMessage size={30} />,
+    },
+    {
+      link: `/${session.data?.user?.username}`,
+      icon: <IconUser />,
+    },
+  ];
+
+  function handleSearchSatus() {
+    // console.log(searchStatus);
+    setSearchStatus((prev) => !prev);
+  }
+
   return (
     <>
       <div
         className={cn(
-          "h-[50px] px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
+          'h-[50px] absolute bottom-0 z-50 px-4 py-4 flex flex-row md:hidden items-center justify-evenly bg-neutral-100 dark:bg-neutral-800 w-full rounded-sm overflow-hidden',
+          className,
+          path.startsWith('/chat') && 'hidden'
         )}
         {...props}
       >
-        <div className="flex justify-end z-20 w-full">
+        <SearchDialog status={searchStatus} changeStatus={handleSearchSatus} />
+        {icons.map((icon, index) => (
+          <Link
+            key={index}
+            href={icon.link}
+            className={`${active === index ? 'text-[#45a033]' : 'text-white'} p-2 rounded-full`}
+            onClick={() => setActive(index)}
+          >
+            {icon.icon}
+          </Link>
+        ))}
+        {/* <div className="flex justify-end z-20 w-full">
           <IconMenu2
             className="text-neutral-800 dark:text-neutral-200"
             onClick={() => setOpen(!open)}
@@ -129,15 +187,15 @@ export const MobileSidebar = ({
         <AnimatePresence>
           {open && (
             <motion.div
-              initial={{ x: "-100%", opacity: 0 }}
+              initial={{ x: '-100%', opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
+              exit={{ x: '-100%', opacity: 0 }}
               transition={{
                 duration: 0.3,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
               className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between",
+                'fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between',
                 className
               )}
             >
@@ -150,7 +208,7 @@ export const MobileSidebar = ({
               {children}
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
       </div>
     </>
   );
@@ -171,7 +229,7 @@ export const SidebarLink = ({
       href={link.href}
       onClick={link.onClick}
       className={cn(
-        "flex items-center justify-start gap-2  group/sidebar py-2",
+        'flex items-center justify-start gap-2  group/sidebar py-2',
         className
       )}
       {...props}
@@ -180,7 +238,7 @@ export const SidebarLink = ({
 
       <motion.span
         animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
+          display: animate ? (open ? 'inline-block' : 'none') : 'inline-block',
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
         className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"

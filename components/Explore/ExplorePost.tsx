@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 type Post = {
   id: number;
@@ -16,10 +16,10 @@ type Likedby = {
   postId: number;
 };
 
-import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
-import Image from "next/image";
-import CustomLoader from "../CustomLoader";
+import Link from 'next/link';
+import { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
+import CustomLoader from '../CustomLoader';
 
 export default function ExplorePost() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -45,7 +45,7 @@ export default function ExplorePost() {
         setPosts((prevPosts) => [...prevPosts, ...data.posts]); // Append new posts
       }
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      console.error('Error fetching posts:', error);
     } finally {
       setLoader(false);
     }
@@ -67,11 +67,11 @@ export default function ExplorePost() {
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
-      container.addEventListener("scroll", handleInfiniteScroll);
+      container.addEventListener('scroll', handleInfiniteScroll);
     }
     return () => {
       if (container) {
-        container.removeEventListener("scroll", handleInfiniteScroll);
+        container.removeEventListener('scroll', handleInfiniteScroll);
       }
     };
   }, [hasMore, loader]);
@@ -84,7 +84,7 @@ export default function ExplorePost() {
   [&::-webkit-scrollbar-thumb]:bg-gray-300
   dark:[&::-webkit-scrollbar-track]:bg-neutral-700
   dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-      style={{ height: "100vh" }} // Ensure the container is scrollable
+      style={{ height: '100vh' }} // Ensure the container is scrollable
     >
       <div className="w-full md:w-[80%] mx-auto px-4 py-8">
         <div className="grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
@@ -99,10 +99,10 @@ export default function ExplorePost() {
               <Image
                 src={post.media[0]}
                 alt={`Post ${post.id}`}
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: 'cover' }}
                 className={`transition-transform duration-300 ease-in-out ${
-                  hoveredPost === post.id ? "scale-110" : "scale-100"
+                  hoveredPost === post.id ? 'scale-110' : 'scale-100'
                 }`}
               />
               {hoveredPost === post.id && (

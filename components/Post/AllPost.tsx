@@ -1,15 +1,15 @@
-import { db } from "@/lib/db";
-import PostImages from "../PostImages";
-import { PostDropDown } from "./PostDropDown";
-import Link from "next/link";
-import Image from "next/image";
-import LikeButton from "../LikeButton";
-import CommentButton from "../CommentButton";
-import PostShare from "./PostShare";
-import SaveButton from "./SaveButton";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import FollowButton from "../User/FollowButton";
+import { db } from '@/lib/db';
+import PostImages from '../PostImages';
+import { PostDropDown } from './PostDropDown';
+import Link from 'next/link';
+import Image from 'next/image';
+import LikeButton from '../LikeButton';
+import CommentButton from '../CommentButton';
+import PostShare from './PostShare';
+import SaveButton from './SaveButton';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import FollowButton from '../User/FollowButton';
 
 export default async function AllPost() {
   const session = await getServerSession(authOptions);
@@ -62,7 +62,7 @@ export default async function AllPost() {
             key={post.id}
             className="w-full h-full flex justify-center flex-col min-w-[360px] max-w-[960px]"
           >
-            <main className="flex-grow w-[80%] m-auto">
+            <main className="flex-grow w-full md:w-[80%] m-auto">
               <div className="flex flex-col space-y-1 p-4 relative">
                 <div className="text-xs rounded-md w-full px-1 flex justify-between text-gray-400  items-center">
                   <Link
@@ -72,14 +72,13 @@ export default async function AllPost() {
                     <div className="w-10 h-10 rounded-full mr-2 flex justify-center overflow-hidden">
                       <Image
                         src={
-                          post.author.image !== null
-                            ? post.author.image
-                            : `https://api.multiavatar.com/${post.author
-                                .username!}.svg` || "/defaultuser.svg"
+                          post.author.image ||
+                          `https://api.multiavatar.com/${post.author
+                            .username!}.svg`
                         }
                         alt="user image"
                         width={40}
-                        height={20}
+                        height={60}
                       />
                     </div>
                     <p className="w-fit">{post.author.username}</p>
@@ -127,15 +126,17 @@ export default async function AllPost() {
                 </div>
                 <p className="text-sm text-gray-500">
                   <em>
-                    Posted on{" "}
-                    {new Date(post.createdAt).toLocaleDateString("en-GB")}
+                    Posted on{' '}
+                    {new Date(post.createdAt).toLocaleDateString('en-GB')}
                   </em>
                 </p>
                 <div className="flex items-center gap-2">
                   <strong className="font-medium text-gray-600">
                     {post.author.username}
                   </strong>
-                  <p className="text-sm text-white">{post.description}</p>
+                  <p className="text-sm text-white">
+                    {post.description?.slice(0, 15)}...
+                  </p>
                 </div>
               </div>
             </main>

@@ -1,9 +1,9 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { db } from "@/lib/db";
-import { getServerSession } from "next-auth";
-import Image from "next/image";
-import FollowButton from "./FollowButton";
-import Link from "next/link";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { db } from '@/lib/db';
+import { getServerSession } from 'next-auth';
+import Image from 'next/image';
+import FollowButton from './FollowButton';
+import Link from 'next/link';
 
 export default async function AllUsers() {
   const session = await getServerSession(authOptions);
@@ -12,7 +12,7 @@ export default async function AllUsers() {
   const users = await db.user.findMany({
     take: 5,
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
     include: {
       following: {

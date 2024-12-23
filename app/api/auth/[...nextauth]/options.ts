@@ -1,23 +1,23 @@
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
-import GoogleProvider from "next-auth/providers/google";
-import { NextAuthOptions } from "next-auth";
-import { db } from "@/lib/db";
-import { toast } from "sonner";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcrypt';
+import GoogleProvider from 'next-auth/providers/google';
+import { NextAuthOptions } from 'next-auth';
+import { db } from '@/lib/db';
+import { toast } from 'sonner';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         // console.log("Credentials received:", credentials);
@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
-  secret: process.env.JWT_SECRET || "secret",
+  secret: process.env.JWT_SECRET || 'secret',
 
   callbacks: {
     async jwt({ token, user, account, profile }) {
@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
       // console.log("account", account); //undefined
       // console.log("profile", profile); //undefined
 
-      if (account?.provider === "google") {
+      if (account?.provider === 'google') {
         const googleuser = await db.user.findUnique({
           where: {
             email: profile?.email,
@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
             id: true,
           },
         });
-        token.provider = "google";
+        token.provider = 'google';
         token.sub = googleuser?.id.toString();
         token.email = profile?.email;
         token.name = profile?.name;
@@ -79,6 +79,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id as string;
         token.provider = user.provider as string;
         token.name = user.name;
+        token.picture = user.image || null;
         token.username = user.username as string;
         token.email = user.email as string;
         // console.log("Token", token);
@@ -91,7 +92,7 @@ export const authOptions: NextAuthOptions = {
       // console.log("session", session);
       // console.log("User", user); //undefined
 
-      if (token.provider === "google" && token.picture) {
+      if (token.provider === 'google' && token.picture) {
         session.user = {
           id: token.sub as string,
           username: token.name as string,
@@ -104,6 +105,7 @@ export const authOptions: NextAuthOptions = {
         session.user = {
           id: token.sub as string,
           name: token.name,
+          image: token.picture || undefined,
           username: token.username as string,
           email: token.email as string,
           provider: token.provider as string,
@@ -112,7 +114,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async signIn({ user, profile }) {
-      console.log("Profile", profile);
+      console.log('Profile', profile);
 
       const existingUser = await db.user.findUnique({
         where: {
@@ -134,29 +136,29 @@ export const authOptions: NextAuthOptions = {
             username: profile?.name as string,
             email: profile?.email as string,
             image: profile?.picture as string,
-            provider: "google",
+            provider: 'google',
           },
         });
-        revalidatePath("/explore/people");
-        redirect("/");
+        revalidatePath('/explore/people');
+        redirect('/');
       } catch (err) {
         console.log("Couldn't authenticate the user", err);
-        toast.error("Error Creating the user! Please try again");
+        toast.error('Error Creating the user! Please try again');
       }
       return true;
     },
   },
 
   pages: {
-    signIn: "/signin",
+    signIn: '/signin',
   },
   cookies: {
     sessionToken: {
-      name: "next-auth.session-token-snapRealm-app",
+      name: 'next-auth.session-token-snapRealm-app',
       options: {
-        path: "/",
+        path: '/',
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: 'lax',
       },
     },
   },

@@ -1,17 +1,17 @@
-import { redirect } from "next/navigation";
-import { authOptions } from "./api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth";
-import { Suspense } from "react";
-import AllPost from "@/components/Post/AllPost";
-import AllUsers from "@/components/User/AllUsers";
-import { UserLoader } from "@/components/User/UserLoader";
-import { PostLoader } from "@/components/Post/PostLoader";
-import AllStories from "@/components/Stories/AllStories";
+import { redirect } from 'next/navigation';
+import { authOptions } from './api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { Suspense } from 'react';
+import AllPost from '@/components/Post/AllPost';
+import AllUsers from '@/components/User/AllUsers';
+import { UserLoader } from '@/components/User/UserLoader';
+import { PostLoader } from '@/components/Post/PostLoader';
+import AllStories from '@/components/Stories/AllStories';
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
-    redirect("/signin");
+    redirect('/signin');
   }
   return (
     <div

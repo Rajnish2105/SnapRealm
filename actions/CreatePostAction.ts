@@ -1,17 +1,17 @@
-"use server";
+'use server';
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth";
-import { uploadImages } from "@/lib/cloudinary";
-import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { uploadImages } from '@/lib/cloudinary';
+import { db } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function CreatePost(formData: FormData) {
   const session = await getServerSession(authOptions);
-  const title = formData.get("title");
-  const media = formData.getAll("media") as File[];
-  const description = formData.get("description");
+  const title = formData.get('title');
+  const media = formData.getAll('media') as File[];
+  const description = formData.get('description');
 
   const mediaUrls = await uploadImages(media);
 
@@ -24,9 +24,9 @@ export async function CreatePost(formData: FormData) {
     },
   });
   if (newpost) {
-    revalidatePath("/");
-    redirect("/");
+    revalidatePath('/');
+    redirect('/');
   } else {
-    console.error("There is an error");
+    console.error('There is an error');
   }
 }
