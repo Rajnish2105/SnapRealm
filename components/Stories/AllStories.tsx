@@ -44,7 +44,7 @@ export default async function AllStories() {
             >
               <div className="relative mb-1">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-400 to-fuchsia-600 p-[2px]">
-                  <div className="w-full h-full rounded-full border-2 border-white">
+                  <div className="w-full h-full rounded-full border-2 border-white overflow-hidden">
                     <Image
                       src={
                         story.user.image ||
@@ -74,9 +74,9 @@ async function getStories(userid: string) {
   const stories = await db.story.findMany({
     where: {
       user: {
-        followedBy: {
+        following: {
           some: {
-            followingId: userId,
+            followedById: userId,
           },
         },
       },
